@@ -1,0 +1,27 @@
+:root {
+  /* Backgrounds */
+  --bg-base: #f5f3ee;
+  --bg-panel: #ffffff;
+  --border-subtle: #e8e4db;
+
+  /* Text */
+  --text-primary: #2b2a28;
+  --text-secondary: #6b6862;
+
+  /* Accent — pick one */
+  --accent: #c17a56;
+  --accent-soft: #7a8b6f33; /* 20% opacity version */
+  --accent-text: #ffffff;
+
+  /* States */
+  --state-checking: #7a8b6f33;
+  --state-found: #7a8b6f;
+
+  /* Typography */
+  --font-ui: "Inter", sans-serif;
+  --font-heading: "Space Grotesk", sans-serif;
+
+  /* Spacing (optional but useful) */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+}

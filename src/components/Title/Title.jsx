@@ -1,3 +1,5 @@
+import "./Title.css";
+
 const Title = () => {
   return <div id="header">DSA Visualizer</div>;
 };
