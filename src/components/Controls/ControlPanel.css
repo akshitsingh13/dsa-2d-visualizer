@@ -1,0 +1,47 @@
+.control-panel {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.control-panel h2 {
+  margin: 0;
+  color: var(--text-primary);
+  font-family: var(--font-heading);
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.control-group label {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.control-group input {
+  padding: 10px 12px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  background-color: var(--bg-panel);
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+}
+
+.control-panel button {
+  padding: 10px 14px;
+  border: none;
+  border-radius: 6px;
+  background-color: var(--accent);
+  color: white;
+  cursor: pointer;
+}
+
+.control-error {
+  margin: 0;
+  color: #c0392b;
+  font-size: 14px;
+}

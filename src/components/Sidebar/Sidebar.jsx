@@ -1,38 +1,48 @@
-import React from "react";
 import "./Sidebar.css";
+import algorithmRegistry from "../../algorithms/algorithmRegistry";
 
-const Sidebar = ({ dsaConcept, setDsaConcept }) => {
-  return (
-    <div className="sideBarMenu">
-      <div className="searchingMenu">
-        <span>Searching</span>
-        <button
-          onClick={() => {
-            setDsaConcept("LS");
-            console.log(dsaConcept);
-          }}
-        >
-          Linear Search
-        </button>
-        <button
-          onClick={() => {
-            setDsaConcept("BS");
-            console.log(dsaConcept);
-          }}
-        >
-          Binary Search
-        </button>
-      </div>
-      <div className="sortingMenu">
-        <span>Sorting</span>
-        <button>Bubble Sort</button>
-        <button>Selection Sort</button>
-        <button>Insertion Sort</button>
-        <button>Merge Sort</button>
-        <button>Quick Sort</button>
-      </div>
-    </div>
+function Sidebar({ dsaConcept, setDsaConcept }) {
+  const algorithms = Object.entries(algorithmRegistry);
+
+  const searchingAlgorithms = algorithms.filter(
+    ([, config]) => config.category === "searching",
   );
-};
+
+  const sortingAlgorithms = algorithms.filter(
+    ([, config]) => config.category === "sorting",
+  );
+
+  return (
+    <aside className="sidebar">
+      <div className="sidebar-section">
+        <h3>Searching</h3>
+
+        {searchingAlgorithms.map(([id, config]) => (
+          <button
+            key={id}
+            className={dsaConcept === id ? "active" : ""}
+            onClick={() => setDsaConcept(id)}
+          >
+            {config.name}
+          </button>
+        ))}
+      </div>
+
+      <div className="sidebar-section">
+        <h3>Sorting</h3>
+
+        {sortingAlgorithms.map(([id, config]) => (
+          <button
+            key={id}
+            className={dsaConcept === id ? "active" : ""}
+            onClick={() => setDsaConcept(id)}
+          >
+            {config.name}
+          </button>
+        ))}
+      </div>
+    </aside>
+  );
+}
 
 export default Sidebar;

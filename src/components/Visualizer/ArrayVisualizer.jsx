@@ -1,24 +1,16 @@
 import ArrayBox from "./ArrayBox";
+import "./ArrayVisualizer.css";
 
-// Temporary fake step for testing
-const fakeStep = {
-  array: [10, 20, 30, 40, 50],
-  comparingIndices: [2],
-  foundIndex: null,
-  comparisons: 3,
-  message: "Comparing index 2 (value 30) with target 30 — match found.",
-};
+function ArrayVisualizer({ step }) {
+  if (!step) {
+    return (
+      <div className="visualizer-empty">Run the algorithm to visualize it.</div>
+    );
+  }
 
-function ArrayVisualizer({ step = fakeStep }) {
   return (
-    <div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
+    <div className="array-visualizer">
+      <div className="array-row">
         {step.array.map((value, index) => {
           let status = "default";
 
@@ -36,9 +28,9 @@ function ArrayVisualizer({ step = fakeStep }) {
         })}
       </div>
 
-      <p>{step.message}</p>
+      <div className="step-message">{step.message}</div>
 
-      <p>Comparisons: {step.comparisons}</p>
+      <div className="comparison-count">Comparisons: {step.comparisons}</div>
     </div>
   );
 }
