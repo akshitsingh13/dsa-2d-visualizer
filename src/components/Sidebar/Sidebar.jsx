@@ -1,16 +1,30 @@
 import React from "react";
 import "./Sidebar.css";
 
-const Sidebar = () => {
+const Sidebar = ({ dsaConcept, setDsaConcept }) => {
   return (
     <div className="sideBarMenu">
       <div className="searchingMenu">
-        Searching
-        <button>Linear Search</button>
-        <button>Binary Search</button>
+        <span>Searching</span>
+        <button
+          onClick={() => {
+            setDsaConcept("LS");
+            console.log(dsaConcept);
+          }}
+        >
+          Linear Search
+        </button>
+        <button
+          onClick={() => {
+            setDsaConcept("BS");
+            console.log(dsaConcept);
+          }}
+        >
+          Binary Search
+        </button>
       </div>
       <div className="sortingMenu">
-        Sorting
+        <span>Sorting</span>
         <button>Bubble Sort</button>
         <button>Selection Sort</button>
         <button>Insertion Sort</button>
