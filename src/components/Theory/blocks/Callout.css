@@ -1,0 +1,27 @@
+.theory-callout {
+  margin: 0;
+  padding: 12px 16px;
+
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-sm);
+
+  background-color: var(--accent-soft);
+}
+
+.theory-callout-title {
+  margin: 0 0 4px;
+
+  color: var(--text-primary);
+
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.theory-callout-text {
+  margin: 0;
+
+  color: var(--text-primary);
+
+  font-size: 14px;
+  line-height: 1.6;
+}

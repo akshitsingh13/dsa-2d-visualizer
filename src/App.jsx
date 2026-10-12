@@ -15,7 +15,7 @@ import CodePanel from "./components/CodePanel/CodePanel";
 import ComplexityCounter from "./components/Visualizer/ComplexityCounter";
 import TheoryButton from "./components/Theory/TheoryButton";
 import TheoryModal from "./components/Theory/TheoryModal";
-import { getTheory } from "./theory/index";
+import { getCategoryTheory, getTheory } from "./theory/index";
 
 import { useRef, useState } from "react";
 
@@ -236,7 +236,11 @@ function App() {
       </div>
 
       {theoryOpen && getTheory(dsaConcept) ? (
-        <TheoryModal theory={getTheory(dsaConcept)} onClose={closeTheory} />
+        <TheoryModal
+          theory={getTheory(dsaConcept)}
+          categoryTheory={getCategoryTheory(algorithmConfig.category)}
+          onClose={closeTheory}
+        />
       ) : null}
     </div>
   );

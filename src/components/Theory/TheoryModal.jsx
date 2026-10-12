@@ -11,11 +11,22 @@ function focusableIn(container) {
   );
 }
 
-function TheoryModal({ theory, onClose }) {
+function TheoryModal({ theory, categoryTheory, onClose }) {
   const dialogRef = useRef(null);
   const scrollerRef = useRef(null);
+  const tocEntries = [
+    ...(categoryTheory
+      ? [
+          {
+            id: "about",
+            title: `About ${categoryTitle(theory.category)}`,
+          },
+        ]
+      : []),
+    ...theory.sections,
+  ];
   const [activeSection, setActiveSection] = useState(
-    theory.sections[0]?.id ?? null,
+    tocEntries[0]?.id ?? null,
   );
 
   // Move focus into the dialog on open and lock body scroll. Steps and the
@@ -152,15 +163,15 @@ function TheoryModal({ theory, onClose }) {
 
         <nav className="theory-toc" aria-label="Theory contents">
           <ul>
-            {theory.sections.map((section) => (
-              <li key={section.id}>
+            {tocEntries.map((entry) => (
+              <li key={entry.id}>
                 <a
-                  href={`#theory-section-${section.id}`}
-                  onClick={scrollToSection(section.id)}
-                  className={activeSection === section.id ? "active" : ""}
-                  aria-current={activeSection === section.id ? "true" : undefined}
+                  href={`#theory-section-${entry.id}`}
+                  onClick={scrollToSection(entry.id)}
+                  className={activeSection === entry.id ? "active" : ""}
+                  aria-current={activeSection === entry.id ? "true" : undefined}
                 >
-                  {section.title}
+                  {entry.title}
                 </a>
               </li>
             ))}
@@ -168,7 +179,7 @@ function TheoryModal({ theory, onClose }) {
         </nav>
 
         <div ref={scrollerRef} className="theory-body">
-          <TheoryContent theory={theory} />
+          <TheoryContent theory={theory} categoryTheory={categoryTheory} />
         </div>
       </div>
     </div>

@@ -1,0 +1,58 @@
+.theory-trace-title {
+  margin: 0 0 12px;
+
+  color: var(--text-primary);
+  font-family: var(--font-heading);
+  font-size: 18px;
+}
+
+.theory-trace-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.theory-trace-step {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  padding: 14px 16px;
+
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+
+  background-color: var(--bg-panel);
+}
+
+.theory-trace-boxes {
+  overflow-x: auto;
+
+  padding: 6px 2px 2px;
+}
+
+.theory-trace-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.theory-trace-explanation {
+  margin: 0;
+
+  color: var(--text-secondary);
+
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.theory-trace-number {
+  color: var(--text-primary);
+
+  font-weight: 600;
+}

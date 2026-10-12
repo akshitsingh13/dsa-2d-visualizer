@@ -2,7 +2,9 @@
 // registry ids. Every key here MUST match an id in algorithmRegistry, and
 // every registry id MUST have an entry here (enforced by tests).
 //
-// Full block content lands in Phase 3; each concept file exports its entry.
+// Concept content lives in one file per concept (linearSearch.js,
+// binarySearch.js, bubbleSort.js, stack.js, queue.js, linkedList.js);
+// category intros live in categories.js. This module only wires them up.
 
 export const REQUIRED_SECTION_IDS = [
   "intuition",
@@ -18,8 +20,17 @@ export const REQUIRED_SECTION_IDS = [
   "resources",
 ];
 
-export const SECTION_TITLES = {
-  intuition: "The big idea",
+export const BLOCK_TYPES = [
+  "paragraph",
+  "list",
+  "code",
+  "table",
+  "callout",
+  "trace",
+  "complexityTable",
+];
+
+export const SECTION_TITLES = {  intuition: "The big idea",
   "how-it-works": "How it works",
   "worked-example": "Worked example",
   code: "Code walkthrough",
@@ -101,9 +112,4 @@ export function getTheory(id) {
   return theories[id] ?? null;
 }
 
-// Category intros land in Phase 2 (src/theory/categories.js).
-export function getCategoryTheory(category) {
-  return categories[category] ?? null;
-}
-
-const categories = {};
+export { getCategoryTheory } from "./categories";
