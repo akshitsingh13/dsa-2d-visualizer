@@ -82,6 +82,9 @@ function App() {
   };
 
   const handleOperationChange = (operation) => {
+    // Changing operation clears the replay (the steps belong to the
+    // previous operation) but keeps the persistent structure state.
+    reset();
     setDsByAlgo((previous) => ({
       ...previous,
       [dsaConcept]: {

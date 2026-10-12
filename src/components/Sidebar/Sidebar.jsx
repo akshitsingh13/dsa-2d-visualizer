@@ -31,7 +31,7 @@ function Sidebar({ dsaConcept, setDsaConcept }) {
   ];
 
   return (
-    <aside className="sidebar">
+    <aside className="sidebar" aria-label="Algorithms">
       {categories.map((category) => (
         <div className="sidebar-section" key={category}>
           <h3>{CATEGORY_TITLES[category] || category}</h3>
@@ -40,6 +40,7 @@ function Sidebar({ dsaConcept, setDsaConcept }) {
             <button
               key={id}
               className={dsaConcept === id ? "active" : ""}
+              aria-current={dsaConcept === id ? "true" : undefined}
               onClick={() => setDsaConcept(id)}
             >
               {config.name}

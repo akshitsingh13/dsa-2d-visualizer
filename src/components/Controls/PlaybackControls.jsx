@@ -34,7 +34,6 @@ function PlaybackControls({
             key={option}
             className={speed === option ? "speed-active" : ""}
             onClick={() => onSpeedChange(option)}
-            disabled={disabled}
             aria-label={`Speed ${option}`}
             aria-pressed={speed === option}
           >

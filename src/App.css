@@ -29,6 +29,9 @@
 }
 
 .panel {
+  min-width: 0;
+  min-height: 0;
+
   background-color: var(--bg-panel);
   border-right: 1px solid var(--border-subtle);
   border-bottom: 1px solid var(--border-subtle);
@@ -57,6 +60,8 @@
   justify-content: center;
   gap: 24px;
   padding: 16px;
+
+  overflow: auto;
 }
 
 .controls-panel {
@@ -67,4 +72,26 @@
 .complexity-panel {
   grid-column: 2;
   grid-row: 2;
+}
+
+/* Below 1280px the 2x2 grid holds; on narrow screens the panels stack
+   vertically and the visualizer panel scrolls instead of breaking. */
+@media (max-width: 960px) {
+  .panel-main {
+    grid-template-columns: 200px 1fr;
+  }
+
+  .panels {
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+    grid-auto-rows: minmax(320px, auto);
+  }
+
+  .code-panel,
+  .visualizer-panel,
+  .controls-panel,
+  .complexity-panel {
+    grid-column: 1;
+    grid-row: auto;
+  }
 }
