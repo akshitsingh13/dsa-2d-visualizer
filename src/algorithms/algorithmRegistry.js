@@ -4,6 +4,7 @@ const algorithmRegistry = {
   LS: {
     name: "Linear Search",
     category: "searching",
+    visualizer: "array",
     algorithm: linearSearch,
 
     code: `vector<int> linearSearch(vector<int> arr, int target) {
@@ -30,6 +31,8 @@ const algorithmRegistry = {
       worst: "O(n)",
       space: "O(1)",
     },
+
+    counters: ["comparisons"],
   },
 };
 

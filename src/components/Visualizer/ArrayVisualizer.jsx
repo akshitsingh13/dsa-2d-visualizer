@@ -22,9 +22,7 @@ function ArrayVisualizer({ step }) {
             status = "found";
           }
 
-          return (
-            <ArrayBox key={index} value={value} index={index} status={status} />
-          );
+          return <ArrayBox key={index} value={value} status={status} />;
         })}
       </div>
 

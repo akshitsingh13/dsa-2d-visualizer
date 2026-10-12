@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./ControlPanel.css";
+import { parseArrayInput, parseNumberInput } from "../../arrayHelpers";
 
 function ControlPanel({ algorithmConfig, onRun }) {
   const [values, setValues] = useState("10,20,30,40,50");
@@ -9,36 +10,27 @@ function ControlPanel({ algorithmConfig, onRun }) {
   const handleRun = () => {
     setError("");
 
-    // Check if values are empty
-    if (!values.trim()) {
-      setError("Please enter array values.");
-      return;
-    }
+    const parsedArray = parseArrayInput(values);
 
-    // Convert comma-separated values into numbers
-    const array = values.split(",").map((value) => Number(value.trim()));
-
-    // Check for invalid values
-    if (array.some((value) => Number.isNaN(value))) {
-      setError("Please enter only numbers separated by commas.");
+    if (!parsedArray.ok) {
+      setError(parsedArray.error);
       return;
     }
 
     // Check target
-    if (algorithmConfig.inputs.target && target.trim() === "") {
-      setError("Please enter a search value.");
+    if (algorithmConfig.inputs.target) {
+      const parsedTarget = parseNumberInput(target, "Search value");
+
+      if (!parsedTarget.ok) {
+        setError(parsedTarget.error);
+        return;
+      }
+
+      onRun(parsedArray.array, parsedTarget.value);
       return;
     }
 
-    const parsedTarget = Number(target);
-
-    // Check if target is a valid number
-    if (algorithmConfig.inputs.target && Number.isNaN(parsedTarget)) {
-      setError("Search value must be a number.");
-      return;
-    }
-
-    onRun(array, parsedTarget);
+    onRun(parsedArray.array);
   };
 
   return (

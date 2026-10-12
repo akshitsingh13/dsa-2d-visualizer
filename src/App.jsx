@@ -4,7 +4,6 @@ import Sidebar from "./components/Sidebar/Sidebar";
 import Title from "./components/Title/Title";
 import ArrayVisualizer from "./components/Visualizer/ArrayVisualizer";
 import useAlgorithmRunner from "./hooks/useAlgorithmRunner";
-// import linearSearch from "./algorithms/linearSearch";
 import PlaybackControls from "./components/Controls/PlaybackControls";
 import algorithmRegistry from "./algorithms/algorithmRegistry";
 import ControlPanel from "./components/Controls/ControlPanel";
@@ -18,6 +17,9 @@ function App() {
   const {
     currentStep,
     isPlaying,
+    speed,
+    setSpeed,
+    hasSteps,
     runAlgorithm,
     nextStep,
     previousStep,
@@ -31,27 +33,6 @@ function App() {
     reset();
   };
 
-  if (!algorithmConfig) {
-    return (
-      <div className="main">
-        <div className="header">
-          <Title />
-        </div>
-
-        <div className="panel-main">
-          <Sidebar
-            dsaConcept={dsaConcept}
-            setDsaConcept={handleAlgorithmChange}
-          />
-
-          <div className="panels">
-            <div className="panel">Algorithm not available yet.</div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="main">
       <div className="header">
@@ -59,41 +40,54 @@ function App() {
       </div>
 
       <div className="panel-main">
-        <Sidebar dsaConcept={dsaConcept} setDsaConcept={setDsaConcept} />
+        <Sidebar
+          dsaConcept={dsaConcept}
+          setDsaConcept={handleAlgorithmChange}
+        />
 
         <div className="panels">
-          <CodePanel
-            code={algorithmConfig.code}
-            activeLine={currentStep?.codeLine}
-          />
+          {!algorithmConfig ? (
+            <div className="panel">Algorithm not available yet.</div>
+          ) : (
+            <>
+              <CodePanel
+                code={algorithmConfig.code}
+                activeLine={currentStep?.codeLine}
+              />
 
-          <div className="panel visualizer-panel">
-            <ArrayVisualizer step={currentStep} />
+              <div className="panel visualizer-panel">
+                <ArrayVisualizer step={currentStep} />
 
-            <PlaybackControls
-              isPlaying={isPlaying}
-              onPlayPause={togglePlay}
-              onPrevious={previousStep}
-              onNext={nextStep}
-              onReset={reset}
-            />
-          </div>
+                <PlaybackControls
+                  isPlaying={isPlaying}
+                  onPlayPause={togglePlay}
+                  onPrevious={previousStep}
+                  onNext={nextStep}
+                  onReset={reset}
+                  disabled={!hasSteps}
+                  speed={speed}
+                  onSpeedChange={setSpeed}
+                />
+              </div>
 
-          <div className="panel controls-panel">
-            <ControlPanel
-              algorithmConfig={algorithmConfig}
-              onRun={(array, target) =>
-                runAlgorithm(algorithmConfig.algorithm, array, target)
-              }
-            />
-          </div>
+              <div className="panel controls-panel">
+                <ControlPanel
+                  algorithmConfig={algorithmConfig}
+                  onRun={(array, target) =>
+                    runAlgorithm(algorithmConfig.algorithm, array, target)
+                  }
+                />
+              </div>
 
-          <div className="panel complexity-panel">
-            <ComplexityCounter
-              complexity={algorithmConfig.complexity}
-              step={currentStep}
-            />
-          </div>
+              <div className="panel complexity-panel">
+                <ComplexityCounter
+                  complexity={algorithmConfig.complexity}
+                  step={currentStep}
+                  counters={algorithmConfig.counters}
+                />
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

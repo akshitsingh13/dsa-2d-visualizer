@@ -1,11 +1,19 @@
 import { useEffect, useState } from "react";
 
+export const SPEEDS = {
+  slow: 1500,
+  normal: 1000,
+  fast: 400,
+};
+
 function useAlgorithmRunner() {
   const [steps, setSteps] = useState([]);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [speed, setSpeed] = useState("normal");
 
   const currentStep = steps[currentStepIndex] || null;
+  const hasSteps = steps.length > 0;
 
   const runAlgorithm = (algorithm, ...args) => {
     const generatedSteps = algorithm(...args);
@@ -18,22 +26,36 @@ function useAlgorithmRunner() {
   };
 
   const nextStep = () => {
-    setCurrentStepIndex((current) => {
-      if (current >= steps.length - 1) {
-        setIsPlaying(false);
-        return current;
-      }
+    if (steps.length === 0) return;
 
-      return current + 1;
-    });
+    const next = currentStepIndex + 1;
+
+    // Never call setState inside another setState updater (updaters must be
+    // pure): compute the next index outside and stop at the last step.
+    if (next > steps.length - 1) {
+      setIsPlaying(false);
+      return;
+    }
+
+    setCurrentStepIndex(next);
   };
 
   const previousStep = () => {
-    setCurrentStepIndex((current) => Math.max(current - 1, 0));
+    if (steps.length === 0) return;
+
+    setCurrentStepIndex(Math.max(currentStepIndex - 1, 0));
   };
 
   const togglePlay = () => {
     if (steps.length === 0) return;
+
+    // If the run has finished, restart from step 0 instead of instantly
+    // pausing on the last step.
+    if (!isPlaying && currentStepIndex >= steps.length - 1) {
+      setCurrentStepIndex(0);
+      setIsPlaying(true);
+      return;
+    }
 
     setIsPlaying((playing) => !playing);
   };
@@ -41,30 +63,34 @@ function useAlgorithmRunner() {
   const reset = () => {
     setIsPlaying(false);
     setCurrentStepIndex(0);
+    setSteps([]);
   };
 
   useEffect(() => {
     if (!isPlaying) return;
 
-    const timer = setInterval(() => {
-      setCurrentStepIndex((current) => {
-        if (current >= steps.length - 1) {
-          setIsPlaying(false);
-          return current;
-        }
+    const timer = setTimeout(() => {
+      const next = currentStepIndex + 1;
 
-        return current + 1;
-      });
-    }, 1000);
+      if (next > steps.length - 1) {
+        setIsPlaying(false);
+        return;
+      }
 
-    return () => clearInterval(timer);
-  }, [isPlaying, steps.length]);
+      setCurrentStepIndex(next);
+    }, SPEEDS[speed] ?? SPEEDS.normal);
+
+    return () => clearTimeout(timer);
+  }, [isPlaying, currentStepIndex, steps.length, speed]);
 
   return {
     steps,
     currentStep,
     currentStepIndex,
     isPlaying,
+    speed,
+    setSpeed,
+    hasSteps,
     runAlgorithm,
     nextStep,
     previousStep,

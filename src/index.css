@@ -17,6 +17,21 @@
   --state-checking: #7a8b6f33;
   --state-found: #7a8b6f;
 
+  /* Element states (same hues as the box styles, as reusable tokens) */
+  --state-current-bg: #f5c26b;
+  --state-current-border: #d99a24;
+  --state-found-bg: #8dcc9a;
+  --state-found-border: #4d9f60;
+  --state-eliminated-bg: #e8e4db;
+  --state-eliminated-text: #a09a8d;
+  --state-swapping-bg: #e6b48c;
+  --state-swapping-border: #c17a56;
+  --state-sorted-bg: #8dcc9a;
+  --state-sorted-border: #4d9f60;
+
+  /* Errors */
+  --error: #c0392b;
+
   /* Typography */
   --font-ui: "Inter", sans-serif;
   --font-heading: "Space Grotesk", sans-serif;

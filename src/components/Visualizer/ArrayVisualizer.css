@@ -40,15 +40,15 @@
 }
 
 .array-box.current {
-  background-color: #f5c26b;
-  border-color: #d99a24;
+  background-color: var(--state-current-bg);
+  border-color: var(--state-current-border);
 
   transform: translateY(-3px);
 }
 
 .array-box.found {
-  background-color: #8dcc9a;
-  border-color: #4d9f60;
+  background-color: var(--state-found-bg);
+  border-color: var(--state-found-border);
 
   transform: translateY(-3px);
 }
