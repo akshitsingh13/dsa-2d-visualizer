@@ -2,23 +2,35 @@ import { useState } from "react";
 import "./ControlPanel.css";
 import { parseArrayInput, parseNumberInput } from "../../arrayHelpers";
 
+// Inputs are driven by `algorithmConfig.inputs` (see the registry contract
+// in src/algorithms/algorithmRegistry.js): each supported field kind is
+// rendered only when the current algorithm declares it. No
+// algorithm-specific branching here.
 function ControlPanel({ algorithmConfig, onRun }) {
   const [values, setValues] = useState("10,20,30,40,50");
   const [target, setTarget] = useState("30");
   const [error, setError] = useState("");
 
+  const showArray = Boolean(algorithmConfig.inputs.array);
+  const showTarget = Boolean(algorithmConfig.inputs.target);
+
   const handleRun = () => {
     setError("");
 
-    const parsedArray = parseArrayInput(values);
+    let array;
 
-    if (!parsedArray.ok) {
-      setError(parsedArray.error);
-      return;
+    if (showArray) {
+      const parsedArray = parseArrayInput(values);
+
+      if (!parsedArray.ok) {
+        setError(parsedArray.error);
+        return;
+      }
+
+      array = parsedArray.array;
     }
 
-    // Check target
-    if (algorithmConfig.inputs.target) {
+    if (showTarget) {
       const parsedTarget = parseNumberInput(target, "Search value");
 
       if (!parsedTarget.ok) {
@@ -26,29 +38,31 @@ function ControlPanel({ algorithmConfig, onRun }) {
         return;
       }
 
-      onRun(parsedArray.array, parsedTarget.value);
+      onRun(array, parsedTarget.value);
       return;
     }
 
-    onRun(parsedArray.array);
+    onRun(array);
   };
 
   return (
     <div className="control-panel">
       <h2>{algorithmConfig.name}</h2>
 
-      <div className="control-group">
-        <label>Values</label>
+      {showArray && (
+        <div className="control-group">
+          <label>Values</label>
 
-        <input
-          type="text"
-          value={values}
-          onChange={(event) => setValues(event.target.value)}
-          placeholder="10,20,30,40,50"
-        />
-      </div>
+          <input
+            type="text"
+            value={values}
+            onChange={(event) => setValues(event.target.value)}
+            placeholder="10,20,30,40,50"
+          />
+        </div>
+      )}
 
-      {algorithmConfig.inputs.target && (
+      {showTarget && (
         <div className="control-group">
           <label>Search</label>
 

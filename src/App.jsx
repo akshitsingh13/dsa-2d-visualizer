@@ -12,6 +12,12 @@ import ComplexityCounter from "./components/Visualizer/ComplexityCounter";
 
 import { useState } from "react";
 
+// Lookup from registry `visualizer` key to component (no if/else chain).
+// New visualizers only need to be added here and in the registry.
+const VISUALIZERS = {
+  array: ArrayVisualizer,
+};
+
 function App() {
   const [dsaConcept, setDsaConcept] = useState("LS");
   const {
@@ -32,6 +38,10 @@ function App() {
     setDsaConcept(algorithmId);
     reset();
   };
+
+  const VisualizerComponent =
+    (algorithmConfig && VISUALIZERS[algorithmConfig.visualizer]) ||
+    ArrayVisualizer;
 
   return (
     <div className="main">
@@ -56,7 +66,7 @@ function App() {
               />
 
               <div className="panel visualizer-panel">
-                <ArrayVisualizer step={currentStep} />
+                <VisualizerComponent step={currentStep} />
 
                 <PlaybackControls
                   isPlaying={isPlaying}
