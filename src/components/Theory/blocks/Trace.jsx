@@ -17,9 +17,13 @@ function TraceStep({ step, stepNumber }) {
     <li className="theory-trace-step">
       <div className="theory-trace-boxes">
         <div className="theory-trace-row">
-          {step.cells.map((cell, index) => (
-            <ArrayBox key={index} value={cell.value} status={cell.tone || "default"} />
-          ))}
+          {step.cells.length === 0 ? (
+            <span className="theory-trace-empty">empty</span>
+          ) : (
+            step.cells.map((cell, index) => (
+              <ArrayBox key={index} value={cell.value} status={cell.tone || "default"} />
+            ))
+          )}
         </div>
 
         {pointers.length > 0 ? (

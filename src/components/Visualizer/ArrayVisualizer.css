@@ -68,6 +68,11 @@
   opacity: 0.55;
 }
 
+.array-box.sorted {
+  background-color: var(--state-sorted-bg);
+  border-color: var(--state-sorted-border);
+}
+
 /* Empty state */
 
 .visualizer-empty {

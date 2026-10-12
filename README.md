@@ -67,7 +67,67 @@ src/
     Visualizer/             # ArrayVisualizer, BarVisualizer, StackVisualizer,
                             # QueueVisualizer, LinkedListVisualizer, PointerLabels,
                             # ComplexityCounter (+ complexityHelpers)
+    Theory/                 # TheoryButton + TheoryModal (dialog shell)
+                            # TheoryContent + Resources + blocks/ renderers
+  theory/                   # theory content: one file per concept
+                            # (linearSearch.js, ...), categories.js, index.js lookup
 ```
+
+## Theory cards
+
+Every concept has a **Read & Learn More** button in the top-right corner of
+the Controls panel. It opens a theory dialog (sidebar stays visible) with an
+in-depth page: intuition, how it works, a worked trace, the exact C++ code
+from the visualizer, complexity analysis, trade-offs, usage, mistakes,
+variations, takeaways, videos and practice problems. Opening the dialog
+pauses playback without losing the current run; closing (Esc, backdrop,
+close button) returns focus to the button and the run continues untouched.
+
+Content is plain JS data rendered by React — never HTML strings. The schema
+per concept (`src/theory/<concept>.js`):
+
+```js
+{
+  id: "BS", title: "Binary Search", category: "searching",
+  summary: "1-2 sentence definition",
+  sections: [
+    { id: "intuition", title: "The big idea", blocks: [...] },
+    // ...all ids in REQUIRED_SECTION_IDS (see src/theory/sections.js)
+  ],
+  videos: [{ title, channel, url, query, isSearchLink }],
+  practice: [{ title, platform, note }],   // names only, never URLs
+}
+```
+
+Block types (`src/components/Theory/blocks/`, see `BLOCK_TYPES` in
+`src/theory/index.js`): `paragraph`, `list`, `code`, `table`, `callout`
+(`tip`/`warning`/`note`), `trace` (static boxes in the visualizer style),
+`complexityTable` (rendered straight from the registry, so theory and
+visualizer can never disagree). Text supports `**bold**` and `` `code` ``.
+
+### How to add theory for a new algorithm
+
+1. Copy `src/theory/linearSearch.js` to `src/theory/<concept>.js`, set `id`
+   to the registry id, and fill in all eleven required sections plus
+   `videos` (3+) and `practice` (2+).
+2. Import the C++ from the algorithm module (e.g. `BINARY_SEARCH_CODE`) for
+   `code` blocks — never retype it, so it stays identical to the CodePanel.
+3. Register the file in `src/theory/index.js` (`theories` map). If the
+   category is new, add an intro to `src/theory/categories.js`.
+4. Run `npm test` — the theory suite checks id parity, required sections,
+   block validity, video URL forms, and code/complexity equality with the
+   registry.
+
+### How to replace a YouTube search link with a direct video link
+
+1. Open the search URL from the theory file and pick the video.
+2. Confirm the title and channel match the topic.
+3. In the theory file, set `url` to `https://www.youtube.com/watch?v=<id>`,
+   `title`/`channel` to the real ones, and `isSearchLink` to `false`.
+4. The UI then shows the video title and channel instead of the
+   "Search on YouTube" label. Never invent video IDs.
+
+## How to add a new algorithm
 
 ## How to add a new algorithm
 

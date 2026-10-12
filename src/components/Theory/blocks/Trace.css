@@ -42,6 +42,22 @@
   justify-content: flex-start;
 }
 
+.theory-trace-empty {
+  display: inline-flex;
+  align-items: center;
+
+  height: 60px;
+  padding: 0 14px;
+
+  border: 1px dashed var(--border-subtle);
+  border-radius: var(--radius-sm);
+
+  color: var(--text-secondary);
+
+  font-size: 14px;
+  font-style: italic;
+}
+
 .theory-trace-explanation {
   margin: 0;
 
