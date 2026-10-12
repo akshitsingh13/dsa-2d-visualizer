@@ -66,6 +66,12 @@ function useAlgorithmRunner() {
     setIsPlaying((playing) => !playing);
   };
 
+  // Pause playback without touching the steps or the current index, so a
+  // paused run can be resumed exactly where it left off.
+  const pause = () => {
+    setIsPlaying(false);
+  };
+
   const reset = () => {
     setIsPlaying(false);
     setCurrentStepIndex(0);
@@ -102,6 +108,7 @@ function useAlgorithmRunner() {
     nextStep,
     previousStep,
     togglePlay,
+    pause,
     reset,
   };
 }

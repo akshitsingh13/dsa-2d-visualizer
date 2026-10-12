@@ -13,8 +13,11 @@ import algorithmRegistry from "./algorithms/algorithmRegistry";
 import ControlPanel from "./components/Controls/ControlPanel";
 import CodePanel from "./components/CodePanel/CodePanel";
 import ComplexityCounter from "./components/Visualizer/ComplexityCounter";
+import TheoryButton from "./components/Theory/TheoryButton";
+import TheoryModal from "./components/Theory/TheoryModal";
+import { getTheory } from "./theory/index";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 // Lookup from registry `visualizer` key to component (no if/else chain).
 // New visualizers only need to be added here and in the registry.
@@ -49,6 +52,8 @@ function App() {
   // Persistent data-structure state per algorithm id:
   // { [id]: { data: [], opCount: 0, operation: "..." } }
   const [dsByAlgo, setDsByAlgo] = useState({});
+  const [theoryOpen, setTheoryOpen] = useState(false);
+  const theoryButtonRef = useRef(null);
   const {
     currentStep,
     isPlaying,
@@ -60,6 +65,7 @@ function App() {
     nextStep,
     previousStep,
     togglePlay,
+    pause,
     reset,
   } = useAlgorithmRunner();
   const algorithmConfig = algorithmRegistry[dsaConcept];
@@ -77,8 +83,27 @@ function App() {
     ArrayVisualizer;
 
   const handleAlgorithmChange = (algorithmId) => {
+    // Switching concepts from the sidebar while the theory dialog is open
+    // closes the dialog and switches normally. Focus stays where the user
+    // put it (on the sidebar), so it is not returned to the theory button.
+    if (theoryOpen) {
+      setTheoryOpen(false);
+    }
+
     setDsaConcept(algorithmId);
     reset();
+  };
+
+  const openTheory = () => {
+    // Pause playback but keep the steps and current index, so closing the
+    // dialog returns the user exactly where they were.
+    pause();
+    setTheoryOpen(true);
+  };
+
+  const closeTheory = () => {
+    setTheoryOpen(false);
+    theoryButtonRef.current?.focus();
   };
 
   const handleOperationChange = (operation) => {
@@ -181,6 +206,14 @@ function App() {
               </div>
 
               <div className="panel controls-panel">
+                {getTheory(dsaConcept) ? (
+                  <TheoryButton
+                    ref={theoryButtonRef}
+                    conceptName={algorithmConfig.name}
+                    onClick={openTheory}
+                  />
+                ) : null}
+
                 <ControlPanel
                   algorithmConfig={algorithmConfig}
                   operation={selectedOperation}
@@ -201,6 +234,10 @@ function App() {
           )}
         </div>
       </div>
+
+      {theoryOpen && getTheory(dsaConcept) ? (
+        <TheoryModal theory={getTheory(dsaConcept)} onClose={closeTheory} />
+      ) : null}
     </div>
   );
 }
