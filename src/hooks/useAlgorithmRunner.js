@@ -18,11 +18,17 @@ function useAlgorithmRunner() {
   const runAlgorithm = (algorithm, ...args) => {
     const generatedSteps = algorithm(...args);
 
-    setSteps(generatedSteps);
-    setCurrentStepIndex(0);
-    setIsPlaying(false);
+    runSteps(generatedSteps);
 
     return generatedSteps;
+  };
+
+  // Load a pre-generated step array (used for operation-based structures
+  // whose state lives outside the runner).
+  const runSteps = (newSteps) => {
+    setSteps(newSteps);
+    setCurrentStepIndex(0);
+    setIsPlaying(false);
   };
 
   const nextStep = () => {
@@ -92,6 +98,7 @@ function useAlgorithmRunner() {
     setSpeed,
     hasSteps,
     runAlgorithm,
+    runSteps,
     nextStep,
     previousStep,
     togglePlay,

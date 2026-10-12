@@ -31,6 +31,15 @@
   font-family: var(--font-ui);
 }
 
+.control-group select {
+  padding: 10px 12px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  background-color: var(--bg-panel);
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+}
+
 .control-panel button {
   padding: 10px 14px;
   border: none;
@@ -38,6 +47,12 @@
   background-color: var(--accent);
   color: white;
   cursor: pointer;
+}
+
+.control-panel button.secondary {
+  border: 1px solid var(--border-subtle);
+  background-color: var(--bg-panel);
+  color: var(--text-primary);
 }
 
 .control-error {

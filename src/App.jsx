@@ -3,6 +3,10 @@ import "./App.css";
 import Sidebar from "./components/Sidebar/Sidebar";
 import Title from "./components/Title/Title";
 import ArrayVisualizer from "./components/Visualizer/ArrayVisualizer";
+import BarVisualizer from "./components/Visualizer/BarVisualizer";
+import StackVisualizer from "./components/Visualizer/StackVisualizer";
+import QueueVisualizer from "./components/Visualizer/QueueVisualizer";
+import LinkedListVisualizer from "./components/Visualizer/LinkedListVisualizer";
 import useAlgorithmRunner from "./hooks/useAlgorithmRunner";
 import PlaybackControls from "./components/Controls/PlaybackControls";
 import algorithmRegistry from "./algorithms/algorithmRegistry";
@@ -16,10 +20,35 @@ import { useState } from "react";
 // New visualizers only need to be added here and in the registry.
 const VISUALIZERS = {
   array: ArrayVisualizer,
+  bars: BarVisualizer,
+  stack: StackVisualizer,
+  queue: QueueVisualizer,
+  linkedList: LinkedListVisualizer,
 };
+
+function defaultOperation(config) {
+  if (config && Array.isArray(config.inputs.operation)) {
+    return config.inputs.operation[0];
+  }
+
+  return null;
+}
+
+// Registry `code` is a C++ string, or — for operation-based structures —
+// an object / function keyed by the selected operation.
+function resolveCode(code, operation) {
+  if (!code) return "";
+  if (typeof code === "string") return code;
+  if (typeof code === "function") return code(operation);
+  if (typeof code === "object") return code[operation] ?? "";
+  return "";
+}
 
 function App() {
   const [dsaConcept, setDsaConcept] = useState("LS");
+  // Persistent data-structure state per algorithm id:
+  // { [id]: { data: [], opCount: 0, operation: "..." } }
+  const [dsByAlgo, setDsByAlgo] = useState({});
   const {
     currentStep,
     isPlaying,
@@ -27,21 +56,85 @@ function App() {
     setSpeed,
     hasSteps,
     runAlgorithm,
+    runSteps,
     nextStep,
     previousStep,
     togglePlay,
     reset,
   } = useAlgorithmRunner();
   const algorithmConfig = algorithmRegistry[dsaConcept];
+  const isDataStructure = algorithmConfig?.category === "data-structures";
+  const dsEntry = dsByAlgo[dsaConcept] ?? {
+    data: [],
+    opCount: 0,
+    operation: algorithmConfig ? defaultOperation(algorithmConfig) : null,
+  };
+  const selectedOperation =
+    dsEntry.operation ?? defaultOperation(algorithmConfig);
+
+  const VisualizerComponent =
+    (algorithmConfig && VISUALIZERS[algorithmConfig.visualizer]) ||
+    ArrayVisualizer;
 
   const handleAlgorithmChange = (algorithmId) => {
     setDsaConcept(algorithmId);
     reset();
   };
 
-  const VisualizerComponent =
-    (algorithmConfig && VISUALIZERS[algorithmConfig.visualizer]) ||
-    ArrayVisualizer;
+  const handleOperationChange = (operation) => {
+    setDsByAlgo((previous) => ({
+      ...previous,
+      [dsaConcept]: {
+        data: dsEntry.data ?? [],
+        opCount: dsEntry.opCount ?? 0,
+        operation,
+      },
+    }));
+  };
+
+  const handleRun = (params) => {
+    if (!algorithmConfig) return;
+
+    if (isDataStructure) {
+      const operation = params.operation ?? selectedOperation;
+      const previousData = dsEntry.data ?? [];
+      const previousCount = dsEntry.opCount ?? 0;
+      const steps = algorithmConfig.algorithm(
+        previousData,
+        { ...params, operation },
+        previousCount,
+        algorithmConfig.capacity,
+      );
+      const lastStep = steps[steps.length - 1];
+
+      // Commit the resulting state; failed operations keep the old state
+      // and do not increment the operation counter.
+      setDsByAlgo((previous) => ({
+        ...previous,
+        [dsaConcept]: {
+          data: lastStep.data !== undefined ? lastStep.data : previousData,
+          opCount: lastStep.error ? previousCount : previousCount + 1,
+          operation,
+        },
+      }));
+      runSteps(steps);
+      return;
+    }
+
+    runAlgorithm(algorithmConfig.algorithm, params.array, params.target);
+  };
+
+  const handleReset = () => {
+    reset();
+
+    // For data structures, Reset also clears the persistent state.
+    if (isDataStructure) {
+      setDsByAlgo((previous) => ({
+        ...previous,
+        [dsaConcept]: { data: [], opCount: 0, operation: selectedOperation },
+      }));
+    }
+  };
 
   return (
     <div className="main">
@@ -61,19 +154,23 @@ function App() {
           ) : (
             <>
               <CodePanel
-                code={algorithmConfig.code}
+                code={resolveCode(algorithmConfig.code, selectedOperation)}
                 activeLine={currentStep?.codeLine}
               />
 
               <div className="panel visualizer-panel">
-                <VisualizerComponent step={currentStep} />
+                <VisualizerComponent
+                  step={currentStep}
+                  config={algorithmConfig}
+                  dataState={dsEntry.data ?? []}
+                />
 
                 <PlaybackControls
                   isPlaying={isPlaying}
                   onPlayPause={togglePlay}
                   onPrevious={previousStep}
                   onNext={nextStep}
-                  onReset={reset}
+                  onReset={handleReset}
                   disabled={!hasSteps}
                   speed={speed}
                   onSpeedChange={setSpeed}
@@ -83,9 +180,9 @@ function App() {
               <div className="panel controls-panel">
                 <ControlPanel
                   algorithmConfig={algorithmConfig}
-                  onRun={(array, target) =>
-                    runAlgorithm(algorithmConfig.algorithm, array, target)
-                  }
+                  operation={selectedOperation}
+                  onOperationChange={handleOperationChange}
+                  onRun={handleRun}
                 />
               </div>
 
@@ -94,6 +191,7 @@ function App() {
                   complexity={algorithmConfig.complexity}
                   step={currentStep}
                   counters={algorithmConfig.counters}
+                  operationKey={isDataStructure ? selectedOperation : undefined}
                 />
               </div>
             </>

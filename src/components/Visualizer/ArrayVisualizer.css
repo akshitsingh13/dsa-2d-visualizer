@@ -53,6 +53,15 @@
   transform: translateY(-3px);
 }
 
+.array-box.eliminated {
+  background-color: var(--bg-base);
+  border-color: var(--border-subtle);
+
+  color: var(--state-eliminated-text);
+
+  opacity: 0.55;
+}
+
 /* Empty state */
 
 .visualizer-empty {
@@ -77,6 +86,10 @@
   line-height: 1.5;
 
   text-align: center;
+}
+
+.step-message.error {
+  color: var(--error);
 }
 
 .comparison-count {
