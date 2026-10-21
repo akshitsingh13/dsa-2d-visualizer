@@ -1,4 +1,4 @@
-function ArrayBox({ value, index, status }) {
+function ArrayBox({ value, status }) {
   return <div className={`array-box ${status}`}>{value}</div>;
 }
 

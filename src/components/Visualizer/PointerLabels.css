@@ -1,0 +1,35 @@
+.pointer-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+/* Matches the 60px array box + its 1px borders so columns stay aligned. */
+.pointer-cell {
+  width: 60px;
+
+  box-sizing: content-box;
+
+  border: 1px solid transparent;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+
+  padding-top: 4px;
+}
+
+.pointer-label {
+  color: var(--text-secondary);
+
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.pointer-label.tone-accent {
+  color: var(--accent);
+  font-weight: 600;
+}

@@ -1,11 +1,16 @@
 import "./ComplexityCounter.css";
+import { counterLabel } from "../../algorithms/stepTypes";
+import { resolveComplexity } from "./complexityHelpers";
 
-function ComplexityCounter({ complexity, step }) {
-  if (!complexity) {
+function ComplexityCounter({ complexity, step, counters, operationKey }) {
+  const resolved = resolveComplexity(complexity, operationKey);
+
+  if (!resolved) {
     return null;
   }
 
-  const comparisons = step ? step.comparisons : 0;
+  const counterKeys =
+    counters && counters.length > 0 ? counters : ["comparisons"];
 
   return (
     <div className="complexity-counter">
@@ -15,36 +20,33 @@ function ComplexityCounter({ complexity, step }) {
       <div className="complexity-grid">
         <div className="complexity-item">
           <span>Best Case</span>
-          <strong>{complexity.best}</strong>
+          <strong>{resolved.best}</strong>
         </div>
 
         <div className="complexity-item">
           <span>Average Case</span>
-          <strong>{complexity.average}</strong>
+          <strong>{resolved.average}</strong>
         </div>
 
         <div className="complexity-item">
           <span>Worst Case</span>
-          <strong>{complexity.worst}</strong>
+          <strong>{resolved.worst}</strong>
         </div>
 
         <div className="complexity-item">
           <span>Space</span>
-          <strong>{complexity.space}</strong>
+          <strong>{resolved.space}</strong>
         </div>
       </div>
 
-      {/* Live Complexity */}
+      {/* Live operation counters from the current step snapshot */}
       <div className="live-complexity">
-        <div>
-          <span>Current Comparisons</span>
-          <strong>{comparisons}</strong>
-        </div>
-
-        <div>
-          <span>Current Time Complexity</span>
-          <strong>O({comparisons})</strong>
-        </div>
+        {counterKeys.map((key) => (
+          <div key={key}>
+            <span>{counterLabel(key)}</span>
+            <strong>{step && step[key] != null ? step[key] : 0}</strong>
+          </div>
+        ))}
       </div>
     </div>
   );

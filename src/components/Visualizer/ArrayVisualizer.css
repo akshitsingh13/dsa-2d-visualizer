@@ -14,6 +14,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
+  max-width: 100%;
+
+  overflow-x: auto;
+
+  padding: 6px 4px;
 }
 
 /* Array boxes */
@@ -40,17 +46,26 @@
 }
 
 .array-box.current {
-  background-color: #f5c26b;
-  border-color: #d99a24;
+  background-color: var(--state-current-bg);
+  border-color: var(--state-current-border);
 
   transform: translateY(-3px);
 }
 
 .array-box.found {
-  background-color: #8dcc9a;
-  border-color: #4d9f60;
+  background-color: var(--state-found-bg);
+  border-color: var(--state-found-border);
 
   transform: translateY(-3px);
+}
+
+.array-box.eliminated {
+  background-color: var(--bg-base);
+  border-color: var(--border-subtle);
+
+  color: var(--state-eliminated-text);
+
+  opacity: 0.55;
 }
 
 /* Empty state */
@@ -77,6 +92,10 @@
   line-height: 1.5;
 
   text-align: center;
+}
+
+.step-message.error {
+  color: var(--error);
 }
 
 .comparison-count {
