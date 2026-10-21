@@ -15,7 +15,10 @@ import CodePanel from "./components/CodePanel/CodePanel";
 import ComplexityCounter from "./components/Visualizer/ComplexityCounter";
 import TheoryButton from "./components/Theory/TheoryButton";
 import TheoryModal from "./components/Theory/TheoryModal";
+import ComplexityAnalysisButton from "./components/ComplexityAnalysis/ComplexityAnalysisButton";
+import ComplexityAnalysisModal from "./components/ComplexityAnalysis/ComplexityAnalysisModal";
 import { getCategoryTheory, getTheory } from "./theory/index";
+import { getComplexityAnalysis } from "./algorithms/complexityAnalysis";
 
 import { useRef, useState } from "react";
 
@@ -52,10 +55,17 @@ function App() {
   // Persistent data-structure state per algorithm id:
   // { [id]: { data: [], opCount: 0, operation: "..." } }
   const [dsByAlgo, setDsByAlgo] = useState({});
+  // Input params from the most recent Run, used by the complexity modal
+  // to compute input size n and show algorithm-specific context.
+  const [currentParams, setCurrentParams] = useState(null);
   const [theoryOpen, setTheoryOpen] = useState(false);
+  const [complexityOpen, setComplexityOpen] = useState(false);
   const theoryButtonRef = useRef(null);
+  const complexityButtonRef = useRef(null);
   const {
+    steps,
     currentStep,
+    currentStepIndex,
     isPlaying,
     speed,
     setSpeed,
@@ -106,6 +116,16 @@ function App() {
     theoryButtonRef.current?.focus();
   };
 
+  const openComplexity = () => {
+    pause();
+    setComplexityOpen(true);
+  };
+
+  const closeComplexity = () => {
+    setComplexityOpen(false);
+    complexityButtonRef.current?.focus();
+  };
+
   const handleOperationChange = (operation) => {
     // Changing operation clears the replay (the steps belong to the
     // previous operation) but keeps the persistent structure state.
@@ -121,6 +141,8 @@ function App() {
   };
 
   const handleRun = (params) => {
+    setCurrentParams(params);
+
     if (!algorithmConfig) return;
 
     if (isDataStructure) {
@@ -214,6 +236,14 @@ function App() {
                   />
                 ) : null}
 
+                {getComplexityAnalysis(dsaConcept) ? (
+                  <ComplexityAnalysisButton
+                    ref={complexityButtonRef}
+                    conceptName={algorithmConfig.name}
+                    onClick={openComplexity}
+                  />
+                ) : null}
+
                 <ControlPanel
                   algorithmConfig={algorithmConfig}
                   operation={selectedOperation}
@@ -240,6 +270,17 @@ function App() {
           theory={getTheory(dsaConcept)}
           categoryTheory={getCategoryTheory(algorithmConfig.category)}
           onClose={closeTheory}
+        />
+      ) : null}
+
+      {complexityOpen && getComplexityAnalysis(dsaConcept) ? (
+        <ComplexityAnalysisModal
+          algorithmConfig={algorithmConfig}
+          currentStep={currentStep}
+          currentStepIndex={currentStepIndex}
+          steps={steps}
+          params={currentParams}
+          onClose={closeComplexity}
         />
       ) : null}
     </div>

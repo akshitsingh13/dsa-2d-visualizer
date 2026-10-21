@@ -24,7 +24,12 @@ previous / reset) alongside the C++ source with the active line highlighted.
   underflow and out-of-range handling.
 - Keyboard-accessible controls with visible focus styles and
   `aria-live` step messages.
-- 74 unit tests (Vitest) covering every step generator.
+- **Complexity Analysis modal**: Best / Average / Worst-case time complexity
+  derivations plus live operation counters and logical space analysis, synced
+  with the current algorithm step. Opens from a button in the top-right of the
+  Controls panel.
+- 113 unit tests (Vitest) covering every step generator and the complexity
+  analysis module.
 
 ## Supported algorithms
 
@@ -53,6 +58,7 @@ npm run lint     # ESLint
 src/
   algorithms/               # pure step generators (no UI logic)
     algorithmRegistry.js    # single source of truth (see contract below)
+    complexityAnalysis.js   # complexity metadata + live-metric computation
     linearSearch.js         # + LINES constants for code highlighting
     binarySearch.js
     bubbleSort.js
@@ -69,6 +75,8 @@ src/
                             # ComplexityCounter (+ complexityHelpers)
     Theory/                 # TheoryButton + TheoryModal (dialog shell)
                             # TheoryContent + Resources + blocks/ renderers
+    ComplexityAnalysis/     # ComplexityAnalysisButton + ComplexityAnalysisModal
+                            # (interactive complexity analysis dialog)
   theory/                   # theory content: one file per concept
                             # (linearSearch.js, ...), categories.js, index.js lookup
 ```
@@ -127,6 +135,61 @@ visualizer can never disagree). Text supports `**bold**` and `` `code` ``.
 4. The UI then shows the video title and channel instead of the
    "Search on YouTube" label. Never invent video IDs.
 
+## Complexity Analysis modal
+
+Every algorithm also has a **Complexity Analysis** button in the top-right
+corner of the Controls panel. It opens an interactive dialog that explains:
+
+1. **Best Case** — input conditions that produce the fastest run, with a
+   step-by-step operation-count derivation and the resulting asymptotic bound
+   (Omega / Theta).
+2. **Average Case** — assumptions about input distribution, expected operation
+   count derivation, and the resulting asymptotic bound.
+3. **Worst Case** — input conditions that produce the slowest run, maximum
+   operation-count derivation, and the resulting asymptotic bound (O).
+4. **Space Complexity** — input storage vs auxiliary storage, logical space
+   calculation, and the auxiliary space bound. Distinguishes algorithm memory
+   from visualization snapshot memory.
+
+The modal also shows **live operation counters** that stay in sync with the
+current algorithm step (comparisons, swaps, operations, or nodes visited
+depending on the algorithm). Moving to Previous / Next / Reset / Play / Pause
+keeps the counters consistent with the displayed step. Playback speed never
+affects the counts — they come directly from the step snapshots, not a timer.
+
+### Complexity metadata contract
+
+Each algorithm registry entry can include an optional `complexityAnalysis`
+field in `src/algorithms/complexityAnalysis.js`:
+
+```js
+{
+  inputSize: (params) => n,                                    // compute n
+  liveMetrics: [                                               // counters to show live
+    { key: "comparisons", label: "Comparisons", stepKey: "comparisons", description: "..." },
+  ],
+  stepOperation: (step) => "description of what this step does",
+  timeComplexity: {
+    best:   { conditions, expression, derivation[], bound, label },
+    average: { conditions, expression, derivation[], bound, label },
+    worst:  { conditions, expression, derivation[], bound, label },
+  },
+  spaceComplexity: {
+    inputStorage, auxiliaryStorage, totalSpace, bound,
+    derivation[], notes,
+  },
+  notes: "...",
+}
+```
+
+`bound` uses Omega (lower bound), Theta (tight bound), or O (upper bound) —
+these are not interchangeable names for best/average/worst cases.
+
+Derivations are human-readable step-by-step math (not computed at runtime),
+so the theory and the live counters can diverge intentionally — the live
+counter shows what *this* execution did; the bound describes *all possible*
+inputs of size n.
+
 ## How to add a new algorithm
 
 ## How to add a new algorithm
@@ -154,11 +217,16 @@ MY: {
 },
 ```
 
-4. If you need a new visual style, add a component in
+4. Optionally add a `complexityAnalysis` entry in
+   `src/algorithms/complexityAnalysis.js` with the mathematical derivations,
+   live-metric configuration, and space analysis for your algorithm. See the
+   "Complexity Analysis modal" section above for the contract.
+
+5. If you need a new visual style, add a component in
    `src/components/Visualizer/` (with its own CSS file using the tokens in
    `src/index.css`), map it in the `VISUALIZERS` lookup in `src/App.jsx`,
    and reference it from the registry entry.
-5. Add Vitest tests for the generator: normal case, empty input, single
+6. Add Vitest tests for the generator: normal case, empty input, single
    element, duplicates, not-found / error paths, and the invariant that
    steps never mutate earlier steps. Run `npm test`, `npm run lint`, and
    `npm run build` — all three must pass.
