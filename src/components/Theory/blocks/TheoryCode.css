@@ -1,0 +1,51 @@
+.theory-code {
+  margin: 0;
+}
+
+.theory-code-block {
+  margin: 0;
+  padding: 16px;
+
+  overflow-x: auto;
+
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+
+  font-family: monospace;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.theory-code-line {
+  display: flex;
+
+  min-height: 22px;
+}
+
+.theory-code-number {
+  width: 32px;
+  flex-shrink: 0;
+
+  margin-right: 14px;
+
+  color: var(--text-secondary);
+
+  text-align: right;
+  user-select: none;
+}
+
+.theory-code-text {
+  white-space: pre;
+}
+
+.theory-code-caption {
+  margin-top: 8px;
+
+  color: var(--text-secondary);
+
+  font-size: 13px;
+  line-height: 1.5;
+}

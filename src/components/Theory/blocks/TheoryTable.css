@@ -1,0 +1,50 @@
+.theory-table-wrap {
+  margin: 0;
+
+  overflow-x: auto;
+}
+
+.theory-table {
+  width: 100%;
+
+  border-collapse: collapse;
+
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.theory-table caption {
+  margin-bottom: 8px;
+
+  color: var(--text-secondary);
+
+  font-size: 13px;
+  text-align: left;
+}
+
+.theory-table th,
+.theory-table td {
+  padding: 8px 12px;
+
+  border: 1px solid var(--border-subtle);
+
+  text-align: left;
+  vertical-align: top;
+}
+
+.theory-table thead th {
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+
+  font-weight: 600;
+}
+
+.theory-table td {
+  color: var(--text-primary);
+
+  background-color: var(--bg-panel);
+}
+
+.theory-table code {
+  font-size: 13px;
+}

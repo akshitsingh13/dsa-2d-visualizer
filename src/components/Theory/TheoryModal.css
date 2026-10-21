@@ -1,0 +1,251 @@
+/* Backdrop covers the main content area only — the sidebar stays visible
+   and clickable so users can see where they are. */
+.theory-backdrop {
+  position: fixed;
+  top: 0;
+  left: 240px;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 24px;
+
+  background-color: rgba(43, 42, 40, 0.45);
+}
+
+.theory-dialog {
+  display: flex;
+  flex-direction: column;
+
+  width: min(980px, 100%);
+  height: min(860px, 100%);
+
+  overflow: hidden;
+
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+
+  background-color: var(--bg-panel);
+  color: var(--text-primary);
+
+  font-family: var(--font-ui);
+
+  animation: theory-open 180ms ease;
+}
+
+.theory-dialog:focus {
+  outline: none;
+}
+
+.theory-dialog:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+@keyframes theory-open {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Header stays fixed at the top while the body scrolls. */
+.theory-header {
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+
+  padding: 20px 24px 16px;
+
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.theory-heading h1 {
+  margin: 6px 0 0;
+
+  font-family: var(--font-heading);
+  font-size: 28px;
+}
+
+.theory-chip {
+  display: inline-block;
+
+  margin: 0;
+  padding: 3px 10px;
+
+  border-radius: 999px;
+
+  background-color: var(--bg-base);
+  color: var(--text-secondary);
+
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.theory-header-actions {
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.theory-back-button {
+  padding: 8px 12px;
+
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+
+  background-color: var(--bg-panel);
+  color: var(--text-primary);
+
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+
+  cursor: pointer;
+
+  transition: background-color 0.2s ease;
+}
+
+.theory-back-button:hover {
+  background-color: var(--bg-base);
+}
+
+.theory-back-button:focus-visible,
+.theory-close-button:focus-visible,
+.theory-toc a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.theory-close-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 34px;
+  height: 34px;
+  padding: 0;
+
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+
+  background-color: var(--bg-panel);
+  color: var(--text-secondary);
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.theory-close-button:hover {
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+}
+
+/* In-page table of contents, always visible while reading. */
+.theory-toc {
+  flex-shrink: 0;
+
+  border-bottom: 1px solid var(--border-subtle);
+
+  padding: 10px 24px;
+}
+
+.theory-toc ul {
+  display: flex;
+  gap: 8px;
+
+  margin: 0;
+  padding: 0;
+
+  overflow-x: auto;
+
+  list-style: none;
+}
+
+.theory-toc a {
+  display: inline-block;
+
+  padding: 6px 12px;
+
+  border-radius: 999px;
+
+  color: var(--text-secondary);
+
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.theory-toc a:hover {
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+}
+
+.theory-toc a.active {
+  background-color: var(--accent);
+  color: white;
+}
+
+/* Only the dialog body scrolls; the page behind stays locked. */
+.theory-body {
+  flex: 1;
+
+  overflow-y: auto;
+
+  padding: 24px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theory-dialog {
+    animation: none;
+  }
+}
+
+/* Narrow screens: full-width dialog, TOC becomes a simple top list. */
+@media (max-width: 900px) {
+  .theory-backdrop {
+    left: 0;
+    padding: 0;
+  }
+
+  .theory-dialog {
+    width: 100%;
+    height: 100%;
+
+    border: none;
+    border-radius: 0;
+  }
+
+  .theory-toc ul {
+    flex-direction: column;
+
+    overflow-x: visible;
+  }
+
+  .theory-toc a {
+    white-space: normal;
+  }
+}

@@ -67,6 +67,9 @@
 .controls-panel {
   grid-column: 1;
   grid-row: 2;
+
+  /* Anchor for the absolutely positioned theory button. */
+  position: relative;
 }
 
 .complexity-panel {
