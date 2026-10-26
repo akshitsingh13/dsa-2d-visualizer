@@ -601,6 +601,90 @@ export const COMPLEXITY_ANALYSIS = {
 
     notes: "A standard BST does not self-balance. Its height h dictates performance: balanced trees run in O(log n) time, while skewed trees degrade to O(n). Traversals (in-order, pre-order, post-order) always visit all n nodes in O(n) time.",
   },
+
+  GRAPH: {
+    id: "GRAPH",
+    title: "Graph",
+    category: "data-structures",
+
+    inputSize: (params) =>
+      params && params.data && params.data.vertices
+        ? params.data.vertices.length
+        : 0,
+
+    liveMetrics: [
+      {
+        key: "nodesVisited",
+        label: "Nodes Visited",
+        stepKey: "nodesVisited",
+        description: "Number of unique vertices visited during the traversal.",
+      },
+      {
+        key: "edgesExplored",
+        label: "Edges Explored",
+        stepKey: "edgesExplored",
+        description: "Number of incident edges inspected along neighbor adjacency lists.",
+      },
+    ],
+
+    stepOperation: (step) => {
+      if (step.activeEdge != null) return "Inspecting / traversing graph edge";
+      if (step.activeVertex != null) return "Visiting graph vertex";
+      if (step.queuedVertices && step.queuedVertices.length > 0) return "Queue / Stack active";
+      return "Graph operation";
+    },
+
+    timeComplexity: {
+      best: {
+        conditions: "Single-vertex graph with no edges, or immediate target node reached.",
+        expression: "T(V, E) = O(1)",
+        derivation: [
+          "Graph with V = 1 and E = 0: exactly 1 vertex processed with empty adjacency list.",
+          "Total operations: 1 visit + 0 edge traversals = O(1).",
+        ],
+        bound: "Omega(1)",
+        label: "Omega(1)",
+      },
+      average: {
+        conditions: "Arbitrary connected unweighted graph represented as an adjacency list.",
+        expression: "T(V, E) = O(V + E)",
+        derivation: [
+          "Each of the V vertices is marked visited and enqueued/pushed at most once: O(V).",
+          "For each vertex, the algorithm scans all outgoing edges in its adjacency list: sum of deg(u) = 2E.",
+          "Total work is proportional to V + 2E = O(V + E).",
+        ],
+        bound: "Theta(V + E)",
+        label: "Theta(V + E)",
+      },
+      worst: {
+        conditions: "Dense complete graph where E = V(V - 1) / 2, or searching an entire component.",
+        expression: "T(V, E) = O(V + E) (or O(V²) for dense graphs)",
+        derivation: [
+          "Every vertex is visited and every incident edge is checked against the visited set.",
+          "In an adjacency list representation, total time remains strictly bounded by O(V + E).",
+          "In a complete graph with E = O(V²), runtime scales as O(V²).",
+        ],
+        bound: "O(V + E)",
+        label: "O(V + E)",
+      },
+    },
+
+    spaceComplexity: {
+      inputStorage: "Adjacency list stores V vertex lists containing 2E edge endpoints total — O(V + E).",
+      auxiliaryStorage: "Visited set/array of size V, plus BFS queue or DFS recursion stack of depth up to V — O(V).",
+      totalSpace: "O(V + E) for graph representation; O(V) auxiliary space for traversal.",
+      bound: "O(V + E)",
+      derivation: [
+        "Vertex array: O(V) space.",
+        "Adjacency list vectors: each undirected edge {u, v} stored twice (in adj[u] and adj[v]) → 2E entries → O(E).",
+        "Auxiliary space: boolean visited array of size V + queue/stack of max size V → O(V).",
+        "Total space: O(V + E).",
+      ],
+      notes: "An adjacency matrix would consume O(V²) space regardless of how few edges exist. The adjacency list is space-optimal for sparse graphs.",
+    },
+
+    notes: "Traversals (BFS and DFS) run in O(V + E) time using an adjacency list. BFS explores level-by-level using a FIFO queue; DFS explores branch depths before backtracking using a LIFO recursion stack.",
+  },
 };
 
 export function getComplexityAnalysis(id) {

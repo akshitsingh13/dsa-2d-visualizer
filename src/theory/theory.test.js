@@ -8,6 +8,7 @@ import { STACK_CODE } from "../algorithms/stackOps";
 import { QUEUE_CODE } from "../algorithms/queueOps";
 import { LL_CODE } from "../algorithms/linkedList";
 import { BST_CODE } from "../algorithms/bstOps";
+import { GRAPH_CODE } from "../algorithms/graphOps";
 import {
   BLOCK_TYPES,
   REQUIRED_SECTION_IDS,
@@ -21,7 +22,7 @@ import ComplexityTable from "../components/Theory/blocks/ComplexityTable";
 import TheoryButton from "../components/Theory/TheoryButton";
 import TheoryModal from "../components/Theory/TheoryModal";
 
-const THEORY_IDS = ["LS", "BS", "BUB", "STK", "QUE", "LL", "BST"];
+const THEORY_IDS = ["LS", "BS", "BUB", "STK", "QUE", "LL", "BST", "GRAPH"];
 const CATEGORIES = ["searching", "sorting", "data-structures"];
 
 function collectBlocks(theory, type) {
@@ -215,6 +216,7 @@ describe("theory matches the visualizer", () => {
       QUE: Object.values(QUEUE_CODE),
       LL: Object.values(LL_CODE),
       BST: Object.values(BST_CODE),
+      GRAPH: Object.values(GRAPH_CODE),
     };
 
     for (const id of THEORY_IDS) {

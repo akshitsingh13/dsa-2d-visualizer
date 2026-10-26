@@ -41,10 +41,15 @@ function ControlPanel({
   const showIndex =
     Boolean(inputs.index) &&
     (!operationOptions || (fieldsForOperation ?? []).includes("index"));
+  const showTargetVertex =
+    Boolean(inputs.targetVertex) &&
+    (!operationOptions ||
+      (fieldsForOperation ?? []).includes("targetVertex"));
 
   const [values, setValues] = useState("10,20,30,40,50");
   const [target, setTarget] = useState("30");
   const [value, setValue] = useState("10");
+  const [targetVertex, setTargetVertex] = useState("20");
   const [indexText, setIndexText] = useState("0");
   const [error, setError] = useState("");
   const [needsSort, setNeedsSort] = useState(null);
@@ -122,6 +127,17 @@ function ControlPanel({
       }
 
       params.index = parsedIndex.value;
+    }
+
+    if (showTargetVertex) {
+      const parsedTargetVertex = parseNumberInput(targetVertex, "Target vertex");
+
+      if (!parsedTargetVertex.ok) {
+        setError(parsedTargetVertex.error);
+        return;
+      }
+
+      params.targetVertex = parsedTargetVertex.value;
     }
 
     onRun(params);
@@ -222,6 +238,19 @@ function ControlPanel({
             onChange={(event) => setIndexText(event.target.value)}
             placeholder="0"
             min="0"
+          />
+        </div>
+      )}
+
+      {showTargetVertex && (
+        <div className="control-group">
+          <label>Target Vertex</label>
+
+          <input
+            type="number"
+            value={targetVertex}
+            onChange={(event) => setTargetVertex(event.target.value)}
+            placeholder="20"
           />
         </div>
       )}

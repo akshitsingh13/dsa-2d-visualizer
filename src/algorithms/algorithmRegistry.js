@@ -5,6 +5,7 @@ import stackOperation, { STACK_CAPACITY, STACK_CODE } from "./stackOps";
 import queueOperation, { QUEUE_CAPACITY, QUEUE_CODE } from "./queueOps";
 import linkedListOperation, { LL_CODE, LL_OPERATIONS } from "./linkedList";
 import bstOperation, { BST_CODE, BST_OPERATIONS } from "./bstOps";
+import graphOperation, { GRAPH_CODE, GRAPH_OPERATIONS } from "./graphOps";
 
 // Registry contract — the single source of truth for every visualizer.
 // Each entry must have:
@@ -316,6 +317,77 @@ const algorithmRegistry = {
     },
 
     counters: ["comparisons", "nodesVisited"],
+  },
+
+  GRAPH: {
+    name: "Graph",
+    category: "data-structures",
+    visualizer: "graph",
+    algorithm: graphOperation,
+    code: GRAPH_CODE,
+
+    inputs: {
+      operation: GRAPH_OPERATIONS,
+      value: true,
+      targetVertex: true,
+    },
+
+    operationFields: {
+      "add-vertex": ["value"],
+      "add-edge": ["value", "targetVertex"],
+      "remove-vertex": ["value"],
+      "remove-edge": ["value", "targetVertex"],
+      bfs: ["value"],
+      dfs: ["value"],
+      clear: [],
+    },
+
+    complexity: {
+      "add-vertex": {
+        best: "O(1)",
+        average: "O(1)",
+        worst: "O(1)",
+        space: "O(V + E)",
+      },
+      "add-edge": {
+        best: "O(1)",
+        average: "O(1)",
+        worst: "O(deg(u))",
+        space: "O(V + E)",
+      },
+      "remove-vertex": {
+        best: "O(deg(u))",
+        average: "O(V + E)",
+        worst: "O(V + E)",
+        space: "O(V + E)",
+      },
+      "remove-edge": {
+        best: "O(1)",
+        average: "O(deg(u))",
+        worst: "O(deg(u))",
+        space: "O(V + E)",
+      },
+      bfs: {
+        best: "O(1)",
+        average: "O(V + E)",
+        worst: "O(V + E)",
+        space: "O(V)",
+      },
+      dfs: {
+        best: "O(1)",
+        average: "O(V + E)",
+        worst: "O(V + E)",
+        space: "O(V)",
+      },
+      clear: {
+        best: "O(1)",
+        average: "O(1)",
+        worst: "O(1)",
+        space: "O(1)",
+      },
+    },
+
+    counters: ["nodesVisited", "edgesExplored"],
   },
 };
 

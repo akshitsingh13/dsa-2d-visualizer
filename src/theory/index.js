@@ -13,6 +13,7 @@ import stackTheory from "./stack";
 import queueTheory from "./queue";
 import linkedListTheory from "./linkedList";
 import bstTheory from "./bst";
+import graphTheory from "./graph";
 
 export { REQUIRED_SECTION_IDS, SECTION_TITLES } from "./sections";
 
@@ -44,6 +45,7 @@ const theories = {
   QUE: queueTheory,
   LL: linkedListTheory,
   BST: bstTheory,
+  GRAPH: graphTheory,
 };
 
 export function getTheory(id) {
