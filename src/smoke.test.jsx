@@ -108,10 +108,14 @@ describe("component smoke tests", () => {
           step: { comparisons: 2, swaps: 1, operations: 1, nodesVisited: 1 },
           counters: config.counters,
           operationKey: operation,
+          onOpenAnalysis: () => {},
+          hasAnalysis: true,
+          conceptName: config.name,
         }),
       );
 
       expect(html).toMatch(/Time &amp; Space Complexity/);
+      expect(html).toMatch(/Complexity Analysis/);
     }
   });
 });

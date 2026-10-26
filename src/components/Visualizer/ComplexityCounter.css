@@ -6,6 +6,14 @@
   gap: 20px;
 }
 
+.complexity-counter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
 .complexity-counter h2 {
   margin: 0;
 

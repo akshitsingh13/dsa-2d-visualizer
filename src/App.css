@@ -11,6 +11,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0 24px;
+}
+
+.learning-view-container {
+  overflow-y: auto;
+  max-height: calc(100vh - 74px);
+  background-color: var(--bg-base);
+  scroll-behavior: smooth;
 }
 
 .panel-main {
@@ -68,8 +76,20 @@
   grid-column: 1;
   grid-row: 2;
 
-  /* Anchor for the absolutely positioned theory button. */
+  /* Anchor for the absolutely positioned action group. */
   position: relative;
+}
+
+/* Button group: Theory, Complexity, Learning — stacked top-right */
+.controls-action-group {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+  z-index: 1;
 }
 
 .complexity-panel {

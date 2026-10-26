@@ -1,8 +1,18 @@
 import "./ComplexityCounter.css";
 import { counterLabel } from "../../algorithms/stepTypes";
 import { resolveComplexity } from "./complexityHelpers";
+import ComplexityAnalysisButton from "../ComplexityAnalysis/ComplexityAnalysisButton";
 
-function ComplexityCounter({ complexity, step, counters, operationKey }) {
+function ComplexityCounter({
+  complexity,
+  step,
+  counters,
+  operationKey,
+  onOpenAnalysis,
+  analysisButtonRef,
+  conceptName,
+  hasAnalysis,
+}) {
   const resolved = resolveComplexity(complexity, operationKey);
 
   if (!resolved) {
@@ -14,7 +24,16 @@ function ComplexityCounter({ complexity, step, counters, operationKey }) {
 
   return (
     <div className="complexity-counter">
-      <h2>Time & Space Complexity</h2>
+      <div className="complexity-counter-header">
+        <h2>Time & Space Complexity</h2>
+        {hasAnalysis && onOpenAnalysis ? (
+          <ComplexityAnalysisButton
+            ref={analysisButtonRef}
+            conceptName={conceptName}
+            onClick={onOpenAnalysis}
+          />
+        ) : null}
+      </div>
 
       {/* Theoretical Complexity */}
       <div className="complexity-grid">

@@ -17,11 +17,12 @@ import CodePanel from "./components/CodePanel/CodePanel";
 import ComplexityCounter from "./components/Visualizer/ComplexityCounter";
 import TheoryButton from "./components/Theory/TheoryButton";
 import TheoryModal from "./components/Theory/TheoryModal";
-import ComplexityAnalysisButton from "./components/ComplexityAnalysis/ComplexityAnalysisButton";
 import ComplexityAnalysisModal from "./components/ComplexityAnalysis/ComplexityAnalysisModal";
 import { getCategoryTheory, getTheory } from "./theory/index";
 import { getComplexityAnalysis } from "./algorithms/complexityAnalysis";
 import { createDefaultGraph } from "./algorithms/graphOps";
+import InfoButton from "./components/Learning/InfoButton";
+import LearningPage from "./components/Learning/LearningPage";
 
 import { useRef, useState } from "react";
 
@@ -71,8 +72,10 @@ function App() {
   const [currentParams, setCurrentParams] = useState(null);
   const [theoryOpen, setTheoryOpen] = useState(false);
   const [complexityOpen, setComplexityOpen] = useState(false);
+  const [learningOpen, setLearningOpen] = useState(false);
   const theoryButtonRef = useRef(null);
   const complexityButtonRef = useRef(null);
+  const infoButtonRef = useRef(null);
   const {
     steps,
     currentStep,
@@ -135,6 +138,11 @@ function App() {
   const closeComplexity = () => {
     setComplexityOpen(false);
     complexityButtonRef.current?.focus();
+  };
+
+  const toggleLearning = () => {
+    pause();
+    setLearningOpen((prev) => !prev);
   };
 
   const handleOperationChange = (operation) => {
@@ -214,7 +222,16 @@ function App() {
           setDsaConcept={handleAlgorithmChange}
         />
 
-        <div className="panels">
+        {learningOpen ? (
+          <div className="learning-view-container">
+            <LearningPage
+              dsaConcept={dsaConcept}
+              algorithmConfig={algorithmConfig}
+              onBack={() => setLearningOpen(false)}
+            />
+          </div>
+        ) : (
+          <div className="panels">
           {!algorithmConfig ? (
             <div className="panel">Algorithm not available yet.</div>
           ) : (
@@ -244,21 +261,16 @@ function App() {
               </div>
 
               <div className="panel controls-panel">
-                {getTheory(dsaConcept) ? (
-                  <TheoryButton
-                    ref={theoryButtonRef}
-                    conceptName={algorithmConfig.name}
-                    onClick={openTheory}
-                  />
-                ) : null}
-
-                {getComplexityAnalysis(dsaConcept) ? (
-                  <ComplexityAnalysisButton
-                    ref={complexityButtonRef}
-                    conceptName={algorithmConfig.name}
-                    onClick={openComplexity}
-                  />
-                ) : null}
+                <div className="controls-action-group">
+                  {algorithmConfig && (
+                    <InfoButton
+                      ref={infoButtonRef}
+                      conceptName={algorithmConfig.name}
+                      isActive={learningOpen}
+                      onClick={toggleLearning}
+                    />
+                  )}
+                </div>
 
                 <ControlPanel
                   algorithmConfig={algorithmConfig}
@@ -274,11 +286,16 @@ function App() {
                   step={currentStep}
                   counters={algorithmConfig.counters}
                   operationKey={isDataStructure ? selectedOperation : undefined}
+                  onOpenAnalysis={openComplexity}
+                  analysisButtonRef={complexityButtonRef}
+                  conceptName={algorithmConfig.name}
+                  hasAnalysis={Boolean(getComplexityAnalysis(dsaConcept))}
                 />
               </div>
             </>
           )}
         </div>
+        )}
       </div>
 
       {theoryOpen && getTheory(dsaConcept) ? (
@@ -296,6 +313,8 @@ function App() {
           currentStepIndex={currentStepIndex}
           steps={steps}
           params={currentParams}
+          activeOperation={selectedOperation}
+          currentData={dsEntry.data}
           onClose={closeComplexity}
         />
       ) : null}

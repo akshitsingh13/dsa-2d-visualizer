@@ -251,4 +251,60 @@ describe("algorithm-specific complexity correctness", () => {
     expect(keys).toContain("comparisons");
     expect(keys).toContain("swaps");
   });
+
+  it("BST: best Omega(1), average Theta(log n), worst O(n)", () => {
+    const bst = getComplexityAnalysis("BST");
+    expect(bst.timeComplexity.best.bound).toBe("Omega(1)");
+    expect(bst.timeComplexity.average.bound).toBe("Theta(log n)");
+    expect(bst.timeComplexity.worst.bound).toBe("O(n)");
+    expect(bst.spaceComplexity.bound).toBe("O(n)");
+
+    // Test inputSize helper
+    expect(bst.inputSize({ data: { size: 10 } })).toBe(10);
+    expect(bst.inputSize({ data: { id: 1, left: { id: 2 }, right: null } })).toBe(2);
+  });
+
+  it("Graph: best Omega(1), average/worst Theta/O(V + E)", () => {
+    const graph = getComplexityAnalysis("GRAPH");
+    expect(graph.timeComplexity.best.bound).toBe("Omega(1)");
+    expect(graph.timeComplexity.average.bound).toBe("Theta(V + E)");
+    expect(graph.timeComplexity.worst.bound).toBe("O(V + E)");
+    expect(graph.spaceComplexity.bound).toBe("O(V + E)");
+
+    // Test inputSize helper
+    expect(graph.inputSize({ data: { vertices: [1, 2, 3] } })).toBe(3);
+  });
+
+  it("provides definitions, worked examples, and resolveOperationAnalysis for data structures", async () => {
+    const { resolveOperationAnalysis } = await import("./complexityAnalysis");
+
+    // All algorithms have a concept definition
+    for (const id of REGISTRY_IDS) {
+      const entry = getComplexityAnalysis(id);
+      expect(typeof entry.definition).toBe("string");
+      expect(entry.definition.length).toBeGreaterThan(15);
+    }
+
+    // Single-concept algorithms have workedExample
+    for (const id of ["LS", "BS", "BUB"]) {
+      const entry = getComplexityAnalysis(id);
+      expect(entry.workedExample).toBeTruthy();
+      expect(typeof entry.workedExample.problem).toBe("string");
+      expect(Array.isArray(entry.workedExample.steps)).toBe(true);
+    }
+
+    // Multi-operation data structures have operation dictionaries
+    const ll = getComplexityAnalysis("LL");
+    expect(ll.operations).toBeTruthy();
+    expect(Object.keys(ll.operations)).toContain("insert-head");
+    expect(Object.keys(ll.operations)).toContain("insert-tail");
+    expect(Object.keys(ll.operations)).toContain("search");
+
+    const resolved = resolveOperationAnalysis(ll, "insert-head");
+    expect(resolved.operationName).toBe("Insert at Head");
+    expect(resolved.timeComplexity.worst.label).toBe("O(1)");
+    expect(resolved.timeComplexity.worst.bound).toBe("Theta(1)");
+    expect(resolved.timeComplexity.worst.steps.length).toBeGreaterThan(0);
+    expect(resolved.workedExample).toBeTruthy();
+  });
 });
