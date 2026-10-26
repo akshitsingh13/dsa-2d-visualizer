@@ -7,6 +7,7 @@ import BarVisualizer from "./components/Visualizer/BarVisualizer";
 import StackVisualizer from "./components/Visualizer/StackVisualizer";
 import QueueVisualizer from "./components/Visualizer/QueueVisualizer";
 import LinkedListVisualizer from "./components/Visualizer/LinkedListVisualizer";
+import TreeVisualizer from "./components/Visualizer/TreeVisualizer";
 import useAlgorithmRunner from "./hooks/useAlgorithmRunner";
 import PlaybackControls from "./components/Controls/PlaybackControls";
 import algorithmRegistry from "./algorithms/algorithmRegistry";
@@ -30,6 +31,7 @@ const VISUALIZERS = {
   stack: StackVisualizer,
   queue: QueueVisualizer,
   linkedList: LinkedListVisualizer,
+  tree: TreeVisualizer,
 };
 
 function defaultOperation(config) {
@@ -81,7 +83,7 @@ function App() {
   const algorithmConfig = algorithmRegistry[dsaConcept];
   const isDataStructure = algorithmConfig?.category === "data-structures";
   const dsEntry = dsByAlgo[dsaConcept] ?? {
-    data: [],
+    data: dsaConcept === "BST" ? null : [],
     opCount: 0,
     operation: algorithmConfig ? defaultOperation(algorithmConfig) : null,
   };
@@ -147,7 +149,8 @@ function App() {
 
     if (isDataStructure) {
       const operation = params.operation ?? selectedOperation;
-      const previousData = dsEntry.data ?? [];
+      const defaultEmptyData = dsaConcept === "BST" ? null : [];
+      const previousData = dsEntry.data !== undefined ? dsEntry.data : defaultEmptyData;
       const previousCount = dsEntry.opCount ?? 0;
       const steps = algorithmConfig.algorithm(
         previousData,
@@ -181,7 +184,11 @@ function App() {
     if (isDataStructure) {
       setDsByAlgo((previous) => ({
         ...previous,
-        [dsaConcept]: { data: [], opCount: 0, operation: selectedOperation },
+        [dsaConcept]: {
+          data: dsaConcept === "BST" ? null : [],
+          opCount: 0,
+          operation: selectedOperation,
+        },
       }));
     }
   };

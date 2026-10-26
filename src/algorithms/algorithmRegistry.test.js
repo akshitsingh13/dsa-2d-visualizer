@@ -3,13 +3,13 @@ import algorithmRegistry from "./algorithmRegistry";
 import { resolveComplexity } from "../components/Visualizer/complexityHelpers";
 
 const VALID_CATEGORIES = ["searching", "sorting", "data-structures"];
-const VALID_VISUALIZERS = ["array", "bars", "stack", "queue", "linkedList"];
+const VALID_VISUALIZERS = ["array", "bars", "stack", "queue", "linkedList", "tree"];
 
 describe("algorithmRegistry contract", () => {
   const entries = Object.entries(algorithmRegistry);
 
-  it("registers six algorithms", () => {
-    expect(entries.length).toBe(6);
+  it("registers seven algorithms", () => {
+    expect(entries.length).toBe(7);
   });
 
   it("gives every entry the required fields", () => {

@@ -4,6 +4,7 @@ import bubbleSort, { BUBBLE_SORT_CODE } from "./bubbleSort";
 import stackOperation, { STACK_CAPACITY, STACK_CODE } from "./stackOps";
 import queueOperation, { QUEUE_CAPACITY, QUEUE_CODE } from "./queueOps";
 import linkedListOperation, { LL_CODE, LL_OPERATIONS } from "./linkedList";
+import bstOperation, { BST_CODE, BST_OPERATIONS } from "./bstOps";
 
 // Registry contract — the single source of truth for every visualizer.
 // Each entry must have:
@@ -245,6 +246,76 @@ const algorithmRegistry = {
     },
 
     counters: ["nodesVisited"],
+  },
+
+  BST: {
+    name: "Binary Search Tree",
+    category: "data-structures",
+    visualizer: "tree",
+    algorithm: bstOperation,
+    code: BST_CODE,
+
+    inputs: {
+      operation: BST_OPERATIONS,
+      value: true,
+    },
+
+    operationFields: {
+      insert: ["value"],
+      search: ["value"],
+      delete: ["value"],
+      inorder: [],
+      preorder: [],
+      postorder: [],
+      clear: [],
+    },
+
+    complexity: {
+      insert: {
+        best: "O(1)",
+        average: "O(log n)",
+        worst: "O(n)",
+        space: "O(h)",
+      },
+      search: {
+        best: "O(1)",
+        average: "O(log n)",
+        worst: "O(n)",
+        space: "O(h)",
+      },
+      delete: {
+        best: "O(1)",
+        average: "O(log n)",
+        worst: "O(n)",
+        space: "O(h)",
+      },
+      inorder: {
+        best: "O(n)",
+        average: "O(n)",
+        worst: "O(n)",
+        space: "O(h)",
+      },
+      preorder: {
+        best: "O(n)",
+        average: "O(n)",
+        worst: "O(n)",
+        space: "O(h)",
+      },
+      postorder: {
+        best: "O(n)",
+        average: "O(n)",
+        worst: "O(n)",
+        space: "O(h)",
+      },
+      clear: {
+        best: "O(1)",
+        average: "O(1)",
+        worst: "O(1)",
+        space: "O(1)",
+      },
+    },
+
+    counters: ["comparisons", "nodesVisited"],
   },
 };
 

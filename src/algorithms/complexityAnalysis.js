@@ -518,6 +518,89 @@ export const COMPLEXITY_ANALYSIS = {
     notes:
       "Per-operation complexity differs: insert-head O(1), insert-tail O(n), insert-index O(n), delete-value O(n), delete-head O(1), search O(n), traverse O(n). The registry stores per-operation complexity keyed by operation name.",
   },
+
+  BST: {
+    id: "BST",
+    title: "Binary Search Tree",
+    category: "data-structures",
+
+    inputSize: (params) => (params && params.data ? params.data.size ?? 0 : 0),
+
+    liveMetrics: [
+      {
+        key: "comparisons",
+        label: "Comparisons",
+        stepKey: "comparisons",
+        description: "Number of key comparisons made while navigating down the tree.",
+      },
+      {
+        key: "nodesVisited",
+        label: "Nodes Visited",
+        stepKey: "nodesVisited",
+        description: "Number of tree nodes visited during the operation.",
+      },
+    ],
+
+    stepOperation: (step) => {
+      if (step.foundNodeId != null) return "Found target node in the BST";
+      if (step.comparingNodeId != null) return "Comparing key at current node";
+      if (step.traversalOrder && step.traversalOrder.length > 0) return "Traversing BST";
+      if (step.activeNodeId != null) return "Inspecting / modifying tree node";
+      return "BST operation";
+    },
+
+    timeComplexity: {
+      best: {
+        conditions: "Target is at the root node during search/delete, or tree is perfectly balanced.",
+        expression: "T(n) = O(1) for root match; O(log n) on balanced tree",
+        derivation: [
+          "Root match: exact key found on first comparison → 1 step → O(1).",
+          "Balanced tree: height h = floor(log2 n). Each branching eliminates half the remaining nodes.",
+          "Best-case path length = O(log n).",
+        ],
+        bound: "Omega(1)",
+        label: "Omega(1) or Omega(log n)",
+      },
+      average: {
+        conditions: "Randomly ordered keys inserted into the tree yielding an approximately balanced structure.",
+        expression: "T(n) ≈ 2 ln(n) ≈ 1.386 log2(n) = O(log n)",
+        derivation: [
+          "With uniformly distributed random keys, expected height of a BST is E[h] ≈ 2.99 log2(n).",
+          "Search / insert compares once per level visited.",
+          "Average depth of a node in a random BST is 2 ln(n) = O(log n).",
+        ],
+        bound: "Theta(log n)",
+        label: "Theta(log n)",
+      },
+      worst: {
+        conditions: "Keys inserted in sorted or reverse-sorted order, forming a degenerate/skewed tree.",
+        expression: "T(n) = n comparisons = O(n)",
+        derivation: [
+          "When values are inserted strictly in ascending or descending order, every node has only one child.",
+          "The tree degenerates into a singly linked list of height h = n.",
+          "Searching for the deepest element or inserting a new extreme value requires traversing all n nodes → O(n).",
+        ],
+        bound: "O(n)",
+        label: "O(n)",
+      },
+    },
+
+    spaceComplexity: {
+      inputStorage: "Each node stores a value, left child pointer, and right child pointer — O(n) for n nodes.",
+      auxiliaryStorage: "Recursive call stack space equals tree height h: O(log n) balanced, O(n) skewed.",
+      totalSpace: "O(n) for the BST structure; O(h) call stack auxiliary space.",
+      bound: "O(n)",
+      derivation: [
+        "Each tree node stores data + two child pointers (left, right) → 3 words per node.",
+        "Total node storage for n nodes = O(n).",
+        "Recursive traversal, search, and insertion require call stack frames equal to the current tree height h.",
+        "In a balanced tree: auxiliary call stack space is O(log n). In a skewed tree: O(n).",
+      ],
+      notes: "Self-balancing binary search trees (such as AVL or Red-Black trees) avoid the O(n) skewed worst case by maintaining O(log n) height guarantees.",
+    },
+
+    notes: "A standard BST does not self-balance. Its height h dictates performance: balanced trees run in O(log n) time, while skewed trees degrade to O(n). Traversals (in-order, pre-order, post-order) always visit all n nodes in O(n) time.",
+  },
 };
 
 export function getComplexityAnalysis(id) {

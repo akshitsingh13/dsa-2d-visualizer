@@ -12,6 +12,7 @@ import bubbleSortTheory from "./bubbleSort";
 import stackTheory from "./stack";
 import queueTheory from "./queue";
 import linkedListTheory from "./linkedList";
+import bstTheory from "./bst";
 
 export { REQUIRED_SECTION_IDS, SECTION_TITLES } from "./sections";
 
@@ -42,6 +43,7 @@ const theories = {
   STK: stackTheory,
   QUE: queueTheory,
   LL: linkedListTheory,
+  BST: bstTheory,
 };
 
 export function getTheory(id) {
