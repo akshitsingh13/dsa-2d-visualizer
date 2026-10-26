@@ -1,11 +1,34 @@
 import { useEffect, useState } from "react";
 
+/**
+ * Playback interval durations in milliseconds.
+ */
 export const SPEEDS = {
   slow: 1500,
   normal: 1000,
   fast: 400,
 };
 
+/**
+ * Custom hook managing step-by-step playback, navigation, and timing.
+ * Decouples algorithm step generation from user playback controls.
+ *
+ * @returns {object} Runner state and playback control methods:
+ *   - steps: Array of step snapshot objects.
+ *   - currentStep: Active step snapshot.
+ *   - currentStepIndex: 0-based index of active step.
+ *   - isPlaying: Playback status.
+ *   - speed: Active speed setting ('slow' | 'normal' | 'fast').
+ *   - setSpeed: Setter for speed setting.
+ *   - hasSteps: Boolean indicating if steps are loaded.
+ *   - runAlgorithm: Generates steps using a pure generator and loads them.
+ *   - runSteps: Loads pre-generated steps directly.
+ *   - nextStep: Advances to next step.
+ *   - previousStep: Steps backward.
+ *   - togglePlayPause: Toggles automatic step animation.
+ *   - reset: Resets playback to step 0.
+ *   - pause: Pauses automatic playback.
+ */
 function useAlgorithmRunner() {
   const [steps, setSteps] = useState([]);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);

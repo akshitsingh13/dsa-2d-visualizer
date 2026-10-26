@@ -43,7 +43,21 @@ export const BUBBLE_SORT_CODE = `void bubbleSort(vector<int>& arr) {
     }
 }`;
 
-// Pure step generator: bubbleSort(array) -> steps[]
+/**
+ * Pure step generator for Bubble Sort with early-exit optimization.
+ * Steps through the array, comparing adjacent elements and swapping them if out of order.
+ * If a pass completes with 0 swaps, the array is already sorted and terminates immediately.
+ *
+ * Time Complexity:
+ *   - Best Case: Ω(n) / Θ(n) when array is already sorted (1 pass, 0 swaps).
+ *   - Average Case: Θ(n²) on arbitrary random inputs.
+ *   - Worst Case: O(n²) / Θ(n²) when array is reverse sorted (n(n - 1) / 2 comparisons and swaps).
+ * Auxiliary Space:
+ *   - O(1) in-place sorting modifying elements in-place with scalar registers.
+ *
+ * @param {number[]} array - List of numeric values to sort (max length 12 recommended for visualization).
+ * @returns {Array<object>} Sequence of immutable step snapshots for animation.
+ */
 function bubbleSort(array) {
   const steps = [];
   const data = [...array];

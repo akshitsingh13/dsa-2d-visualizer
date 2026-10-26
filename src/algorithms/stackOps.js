@@ -38,10 +38,22 @@ export const LINES = {
   clear: { FUNC: 1, RESET: 2 },
 };
 
-// Pure step generator: stackOperation(data, { operation, value }, prevCount)
-// -> steps[]. `prevCount` is the number of successful operations so far; the
-// run counts as one more operation unless it fails (overflow / underflow),
-// in which case the state is left unchanged.
+/**
+ * Pure step generator for Array-backed Stack operations.
+ * State persists between runs: every generator call starts from current state
+ * and returns immutable snapshot steps.
+ *
+ * Supported operations:
+ *   - push: adds value at top (checks capacity limit) -> O(1) time, O(1) aux space
+ *   - pop: removes and returns top value -> O(1) time, O(1) aux space
+ *   - peek: reads top value without removal -> O(1) time, O(1) aux space
+ *   - clear: resets top index to -1 -> O(1) time, O(1) aux space
+ *
+ * @param {number[]} data - Current stack array items (bottom at 0, top at last).
+ * @param {{ operation: 'push'|'pop'|'peek'|'clear', value?: number }} params - Operation details.
+ * @param {number} prevCount - Cumulative successful operations counter.
+ * @returns {Array<object>} Sequence of immutable step snapshots for animation.
+ */
 function stackOperation(data, params, prevCount = 0) {
   const { operation, value } = params;
   const steps = [];

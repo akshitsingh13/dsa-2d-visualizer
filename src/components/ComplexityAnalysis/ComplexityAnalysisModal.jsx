@@ -263,6 +263,21 @@ function LiveExecutionVerification({
   );
 }
 
+/**
+ * ComplexityAnalysisModal Component.
+ *
+ * Full-featured educational modal dialog presenting mathematical step-by-step
+ * derivations for time and auxiliary-space complexity.
+ *
+ * Features:
+ *  - Concept definition and selected operation summary.
+ *  - Concrete worked example walkthrough.
+ *  - Interactive time complexity stepper (Worst / Best / Average cases).
+ *  - Full derivation sequence view toggle.
+ *  - Input vs. Auxiliary space breakdown.
+ *  - Live execution measurements verification.
+ *  - Accessible keyboard navigation (Tab loop, Esc to close).
+ */
 function ComplexityAnalysisModal({
   algorithmConfig,
   currentStepIndex,

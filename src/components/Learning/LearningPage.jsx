@@ -404,6 +404,21 @@ function SpaceComplexityDetailed({ dsaConcept, resolvedComplexity }) {
   );
 }
 
+/**
+ * LearningPage Component.
+ *
+ * Full-page interactive educational hub for studying algorithms and data structures.
+ * Features:
+ *  - Responsive non-scrolling jump navigation (Overview, How It Works, Complexity, etc.)
+ *  - Deep educational theory with mental models and step breakdowns.
+ *  - Interactive concept-specific visual diagrams (searching passes, LIFO stack, circular queue, BST, DFS/BFS graph).
+ *  - Mathematical complexity analysis and memory space breakdown.
+ *  - Curated external learning resources (articles, video tutorials, practice problems, reference code).
+ *
+ * @param {string} dsaConcept - Active algorithm/data-structure identifier (e.g. 'LL', 'BST').
+ * @param {object} algorithmConfig - Registry configuration object.
+ * @param {Function} onBack - Callback returning the user to the interactive visualizer.
+ */
 function LearningPage({ dsaConcept, algorithmConfig, onBack }) {
   const theory = getTheory(dsaConcept);
   const resources = getTopicResources(dsaConcept);

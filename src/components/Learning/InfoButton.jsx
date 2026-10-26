@@ -1,5 +1,9 @@
 import "./InfoButton.css";
 
+/**
+ * Entry-point button in the visualizer controls toggling the dedicated
+ * Learning & Resources view.
+ */
 function InfoButton({ onClick, conceptName, isActive, ref }) {
   return (
     <button

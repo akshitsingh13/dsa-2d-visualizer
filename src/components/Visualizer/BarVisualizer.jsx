@@ -1,5 +1,14 @@
 import "./BarVisualizer.css";
 
+/**
+ * BarVisualizer component.
+ * Renders an array as vertical bars whose heights are proportionally scaled to their values.
+ * Visualizes comparisons, element swaps, and sorted partitions during Bubble Sort.
+ *
+ * @param {Object} props
+ * @param {import('../../algorithms/bubbleSort.js').BubbleSortStep} props.step
+ * @returns {JSX.Element}
+ */
 function BarVisualizer({ step }) {
   if (!step) {
     return (

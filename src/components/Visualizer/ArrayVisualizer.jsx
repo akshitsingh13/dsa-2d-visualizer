@@ -2,6 +2,15 @@ import ArrayBox from "./ArrayBox";
 import PointerLabels from "./PointerLabels";
 import "./ArrayVisualizer.css";
 
+/**
+ * ArrayVisualizer component.
+ * Renders an indexed horizontal array of elements along with search boundary pointers (L, M, H)
+ * and active comparison highlights during Linear Search and Binary Search execution.
+ *
+ * @param {Object} props
+ * @param {import('../../algorithms/linearSearch.js').LinearSearchStep | import('../../algorithms/binarySearch.js').BinarySearchStep} props.step
+ * @returns {JSX.Element}
+ */
 function ArrayVisualizer({ step }) {
   if (!step) {
     return (

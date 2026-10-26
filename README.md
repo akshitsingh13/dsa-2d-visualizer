@@ -1,232 +1,319 @@
 # DSA 2D Visualizer
 
-A step-by-step visualizer for data structures and algorithms, built with
-React + Vite. Every algorithm is a **pure function** that returns an array of
-step snapshots; the UI only replays those steps (play / pause / next /
-previous / reset) alongside the C++ source with the active line highlighted.
+A responsive, educational step-by-step visualizer for core Data Structures and Algorithms, built with **React 19** and **Vite**.
 
-![App screenshot](docs/screenshot.png)
-![Demo GIF](docs/demo.gif)
+The application is architected around a **pure function replay model**: algorithm routines take inputs and return an immutable array of step snapshots. The visualizer replays these steps with fine-grained playback controls (Play, Pause, Step Forward, Step Back, Reset, Speed Selection), synchronized side-by-side with formatted C++ source code, live element highlights, step explanations, operation counters, rigorous time/space complexity derivations, and curated learning resources.
 
-> The images above are placeholders — drop real screenshots/GIFs into `docs/`.
+---
 
-## Features
+## Table of Contents
 
-- 2×2 panel layout: C++ code panel, visualizer + playback controls, control
-  panel, and a theory + live-counter complexity panel.
-- Playback with Previous / Play / Next / Reset and slow / normal / fast
-  speed control.
-- Live operation counters (comparisons, swaps, operations, nodes visited)
-  next to the theoretical Big-O table.
-- Input validation with clear error messages (including a sorted-array check
-  with a "Sort array for me" fix-up for Binary Search).
-- Persistent Stack / Queue / Linked List state across runs, with overflow /
-  underflow and out-of-range handling.
-- Keyboard-accessible controls with visible focus styles and
-  `aria-live` step messages.
-- **Complexity Analysis modal**: Best / Average / Worst-case time complexity
-  derivations plus live operation counters and logical space analysis, synced
-  with the current algorithm step. Opens from a button in the top-right of the
-  Controls panel.
-- 113 unit tests (Vitest) covering every step generator and the complexity
-  analysis module.
+1. [Educational Objectives](#educational-objectives)
+2. [Supported Algorithms & Data Structures](#supported-algorithms--data-structures)
+3. [Key Features & User Interface](#key-features--user-interface)
+4. [Architecture & Pure Replay Model](#architecture--pure-replay-model)
+5. [Directory Structure](#directory-structure)
+6. [Complexity Analysis & Derivation Engine](#complexity-analysis--derivation-engine)
+7. [Learning & Resources System](#learning--resources-system)
+8. [Installation & Getting Started](#installation--getting-started)
+9. [Developer Guide: Adding a New Algorithm](#developer-guide-adding-a-new-algorithm)
+10. [Testing & Quality Assurance](#testing--quality-assurance)
+11. [Design Philosophy & Constraints](#design-philosophy--constraints)
+12. [License](#license)
 
-## Supported algorithms
+---
 
-| Algorithm   | Category         | Visualizer | Inputs                              |
-| ----------- | ---------------- | ---------- | ----------------------------------- |
-| Linear Search | Searching      | array      | array + target                      |
-| Binary Search | Searching      | array (L/M/H pointers, eliminated shading) | sorted array + target |
-| Bubble Sort | Sorting          | bars (compare / swap / sorted states) | array (max 12 values) |
-| Stack       | Data Structures  | vertical column with TOP label, capacity 8 | Push / Pop / Peek / Clear |
-| Queue       | Data Structures  | horizontal row with FRONT / REAR labels, capacity 8 | Enqueue / Dequeue / Peek / Clear |
-| Linked List | Data Structures  | nodes with data/next cells, HEAD + curr/prev pointers, null terminator | Insert (head/tail/index), Delete (value/head), Search, Traverse |
+## Educational Objectives
 
-## How to run
+Standard algorithm visualizations frequently jump straight to final states or show abstract animations disconnected from implementation code. DSA 2D Visualizer is built for computer science students and educators to bridge that gap:
 
+- **Code-Visualizer Synchronization**: Every state transition explicitly points to the corresponding C++ source line (`codeLine`) and provides a human-readable description (`message`).
+- **Mathematical Derivations**: Rather than just stating Big-O notation, the interactive Complexity Analysis module breaks down operation counts, summations, recurrence relations, and asymptotic bounds ($\mathcal{O}$, $\Omega$, $\Theta$) for Best, Average, and Worst cases.
+- **Deep Conceptual Theory**: Dedicated learning modules provide algorithmic intuition, step-by-step execution traces, real-world applications, common pitfalls, and curated practice problems.
+- **Deterministic & Sandboxed**: All algorithms run as pure deterministic generators in memory with zero side effects or external network dependencies.
+
+---
+
+## Supported Algorithms & Data Structures
+
+| Category | Algorithm / Structure | Key ID | Visualizer Type | Supported Operations / Inputs |
+| :--- | :--- | :--- | :--- | :--- |
+| **Searching** | Linear Search | `LS` | `array` | Sequential scan with target search (`array`, `target`) |
+| **Searching** | Binary Search | `BS` | `array` | Logarithmic search with Low (`L`), Mid (`M`), High (`H`) bounds and range elimination (`array`, `target`) |
+| **Sorting** | Bubble Sort | `BUB` | `bars` | Adjacent element comparisons, dynamic swaps, and sorted boundary tracking (`array`) |
+| **Data Structures** | Stack | `STK` | `stack` | LIFO vertical column: `Push`, `Pop`, `Peek`, `Clear` (Capacity: 8) |
+| **Data Structures** | Queue | `QUE` | `queue` | FIFO horizontal row with FRONT and REAR pointers: `Enqueue`, `Dequeue`, `Peek`, `Clear` (Capacity: 8) |
+| **Data Structures** | Singly Linked List | `LL` | `linkedList` | Pointer-linked nodes: `Insert Head`, `Insert Tail`, `Insert at Index`, `Delete Head`, `Delete by Value`, `Search`, `Traverse` |
+| **Data Structures** | Binary Search Tree | `BST` | `tree` | Deterministic 2D SVG tree: `Insert`, `Search`, `In-Order`, `Pre-Order`, `Post-Order`, `Clear` |
+| **Data Structures** | Graph | `GRAPH` | `graph` | Undirected circular 2D SVG graph: `Breadth-First Search (BFS)`, `Depth-First Search (DFS)`, `Add Vertex`, `Add Edge`, `Clear` |
+
+---
+
+## Key Features & User Interface
+
+The interface uses a 4-panel responsive grid designed to keep all relevant information visible without context-switching:
+
+1. **C++ Code Panel**: Displays clean, idiomatic C++ source code. The active line is highlighted in real-time as execution progresses through each step snapshot.
+2. **Visualizer Panel**: Dedicated 2D visual canvas tailored to the active data structure or algorithm:
+   - Horizontal indexed array boxes with dynamic pointer tags (`L`, `M`, `H`).
+   - Value-scaled vertical bar graphs with color-coded comparison, swap, and sorted states.
+   - Bounded stack frames with `TOP` indicators and overflow/underflow warnings.
+   - Bounded queue slots with `FRONT` / `REAR` markers and directional flow arrows.
+   - Linked nodes with next-pointer arrows, `HEAD` indicators, and traversal highlights.
+   - 2D SVG Binary Search Tree layout computed via monotonic in-order x-spacing and level-depth y-coordinates.
+   - 2D SVG Graph layout computed via circular vertex distribution with active frontier and edge highlights.
+3. **Control Panel**:
+   - Algorithm-specific parameter inputs (array entries, numeric values, indices, starting vertices).
+   - In-line input validation with user-friendly error messages and automatic sort fix-up for Binary Search.
+   - Persistent data structure operations with bounds checking.
+   - Responsive playback bar: **Step Back**, **Play / Pause**, **Step Forward**, **Reset**, and Speed toggles (**0.5x**, **1x**, **2x**).
+4. **Time & Space Complexity Panel**:
+   - Asymptotic Big-O summary table (Best, Average, Worst, Auxiliary Space).
+   - Live operation counters (Comparisons, Swaps, Memory Operations, Nodes Visited) that increment strictly in sync with step snapshots.
+   - **Complexity Analysis Button**: Opens the detailed step-by-step mathematical derivation dialog.
+5. **Learning & Resources Page**: Accessible via the header navigation, providing structured educational guides, diagrams, and external reference links for every supported topic.
+
+---
+
+## Architecture & Pure Replay Model
+
+DSA 2D Visualizer enforces a strict separation between **algorithm execution** and **UI rendering**:
+
+```
+[User Input / Trigger]
+          │
+          ▼
+┌───────────────────────────────┐
+│     Pure Step Generator       │  (e.g., linearSearch, bstOps, graphOps)
+│  - Receives input data        │
+│  - Executes logic in memory   │
+│  - Emits immutable snapshots  │
+└──────────────┬────────────────┘
+               │  Array of step snapshots: [ { array, codeLine, message, ... }, ... ]
+               ▼
+┌───────────────────────────────┐
+│     useAlgorithmRunner        │  Custom Hook
+│  - Manages active step index  │
+│  - Handles Play/Pause timers  │
+│  - Step Forward / Step Back   │
+│  - Deterministic reset        │
+└──────────────┬────────────────┘
+               │  Current step snapshot
+               ▼
+┌───────────────────────────────┐
+│        UI Components          │
+│  - CodePanel (highlights line)│
+│  - Visualizer (renders frame) │
+│  - ComplexityCounter (counts) │
+└───────────────────────────────┘
+```
+
+### Invariant Guarantees
+- **No side effects inside step generators**: Step generator functions are pure JavaScript. They do not touch the DOM, dispatch React actions, or read browser timers.
+- **Immutability**: Every step snapshot deep-copies its array or structure state (e.g., `[...currentArray]`). Mutating past step states is strictly prohibited and covered by automated regression tests.
+- **Speed Independence**: Operation counts represent logical operations performed by the algorithm, completely independent of playback speed or UI frame rates.
+
+---
+
+## Directory Structure
+
+```
+dsa-2d-visualizer/
+├── src/
+│   ├── algorithms/               # Pure step generators & complexity data
+│   │   ├── algorithmRegistry.js  # Central algorithm definitions & metadata
+│   │   ├── binarySearch.js       # Binary search step generator & C++ source
+│   │   ├── bstOps.js             # BST tree operations & traversal generators
+│   │   ├── bubbleSort.js         # Bubble sort step generator & C++ source
+│   │   ├── complexityAnalysis.js # Mathematical derivation records & live metric specs
+│   │   ├── graphOps.js           # Graph operations, BFS, and DFS generators
+│   │   ├── linearSearch.js       # Linear search step generator & C++ source
+│   │   ├── linkedList.js         # Singly linked list operations & traversal
+│   │   ├── queueOps.js           # Bounded queue operations
+│   │   ├── stackOps.js           # Bounded stack operations
+│   │   └── stepTypes.js          # Shared visual element status constants
+│   ├── components/
+│   │   ├── CodePanel/            # Syntax-highlighted C++ source code display
+│   │   ├── ComplexityAnalysis/   # Step-by-step mathematical derivation modal
+│   │   ├── Controls/             # Config-driven parameter inputs & playback bar
+│   │   ├── Header/               # Application title bar & navigation links
+│   │   ├── Learning/             # Comprehensive Learning & Resources pages
+│   │   ├── Sidebar/              # Topic navigation categorized by algorithm domain
+│   │   └── Visualizer/           # Visual canvas renderers (Array, Bars, Stack, Queue, LL, Tree, Graph)
+│   ├── data/
+│   │   └── learningResources.js  # Structured educational content, theory, and external links
+│   ├── hooks/
+│   │   └── useAlgorithmRunner.js # Playback state machine & step scheduling engine
+│   ├── test/                     # Vitest test suites (159 tests across 15 suites)
+│   ├── arrayHelpers.js           # Sanitization and validation for user inputs
+│   ├── App.jsx                   # Main application layout coordinator
+│   ├── main.jsx                  # React DOM mount point
+│   └── index.css                 # Global design system tokens & styling
+├── package.json
+├── vite.config.js
+└── eslint.config.js
+```
+
+---
+
+## Complexity Analysis & Derivation Engine
+
+Clicking **"Complexity Analysis"** opens a dedicated modal that provides mathematically sound derivations rather than static labels:
+
+- **Best-Case Derivation**: Explains the precise input condition triggering minimum work (e.g., target found at mid index on first check for Binary Search, or sorted input with zero swaps for Bubble Sort), proving the asymptotic lower bound ($\Omega$ or $\Theta$).
+- **Average-Case Derivation**: Explains uniform probability distribution assumptions across array indices or permutations, evaluating the expected number of comparisons.
+- **Worst-Case Derivation**: Explains the adversarial input configuration (e.g., target absent, reversed array), setting up the summation or recurrence relation and showing asymptotic reduction to $\mathcal{O}(f(n))$.
+- **Auxiliary Space Derivation**: Explicitly distinguishes between input space $\mathcal{O}(n)$ and algorithm auxiliary working space $\mathcal{O}(1)$ or call stack depth $\mathcal{O}(h)$, contrasting algorithm space with visualizer memory.
+- **Live Execution Synchronization**: Displays live counters for the ongoing visualization run alongside theoretical limits to verify empirical execution against mathematical formulas.
+
+---
+
+## Learning & Resources System
+
+The integrated Learning & Resources section provides college-level curriculum material for each topic:
+- **Intuition & Core Concept**: Real-world analogies and high-level mechanics.
+- **Step-by-Step Walkthrough**: Detailed trace breakdowns of algorithms on sample inputs.
+- **C++ Reference Implementation**: Complete, tested code snippets matching the visualizer's line-by-line model.
+- **Common Mistakes & Edge Cases**: Highlights common off-by-one errors, infinite loops, and boundary pitfalls.
+- **Curated Videos & Practice Problems**: Direct references to high-quality educational videos and practice platforms.
+
+---
+
+## Installation & Getting Started
+
+### Prerequisites
+- **Node.js**: `v18.0.0` or higher
+- **npm**: `v9.0.0` or higher
+
+### Setup
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/akshitsingh13/dsa-2d-visualizer.git
+   cd dsa-2d-visualizer
+   ```
+
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+
+3. **Start the development server**:
+   ```bash
+   npm run dev
+   ```
+   Open your browser and navigate to `http://localhost:5173`.
+
+4. **Run the test suite**:
+   ```bash
+   npm test
+   ```
+
+5. **Execute ESLint check**:
+   ```bash
+   npm run lint
+   ```
+
+6. **Create a production build**:
+   ```bash
+   npm run build
+   ```
+   Outputs optimized static assets to `dist/`.
+
+---
+
+## Developer Guide: Adding a New Algorithm
+
+To add a new algorithm (e.g., *Selection Sort* or *Binary Search Tree Deletion*):
+
+### 1. Write the Step Generator
+Create a module in `src/algorithms/` (e.g., `selectionSort.js`).
+Define a named constant object for C++ code lines:
+```js
+export const SELECTION_SORT_LINES = {
+  LOOP_I: 3,
+  FIND_MIN: 5,
+  SWAP: 8,
+};
+```
+Write the pure step generator returning an array of snapshot objects:
+```js
+export function selectionSortSteps(initialArray) {
+  const steps = [];
+  const arr = [...initialArray];
+  // Push initial snapshot
+  steps.push({
+    array: [...arr],
+    codeLine: SELECTION_SORT_LINES.LOOP_I,
+    message: "Starting Selection Sort",
+    comparisons: 0,
+    swaps: 0,
+  });
+  // Execute algorithm, pushing immutable copies [...arr] at every step
+  return steps;
+}
+```
+
+### 2. Register the Algorithm
+Open `src/algorithms/algorithmRegistry.js` and add an entry:
+```js
+SS: {
+  id: "SS",
+  name: "Selection Sort",
+  category: "sorting",
+  visualizer: "bars",
+  algorithm: (params) => selectionSortSteps(params.array),
+  code: SELECTION_SORT_CODE,
+  inputs: { array: true },
+  complexity: {
+    best: "O(n²)",
+    average: "O(n²)",
+    worst: "O(n²)",
+    space: "O(1)",
+  },
+  counters: ["comparisons", "swaps"],
+}
+```
+
+### 3. Add Complexity Derivation
+Add mathematical derivation metadata in `src/algorithms/complexityAnalysis.js` specifying input size calculation, metrics, and best/average/worst derivations.
+
+### 4. Add Learning Content
+Add educational explanations, sections, and resources to `src/data/learningResources.js`.
+
+### 5. Write Unit Tests
+Create `src/test/selectionSort.test.js` covering:
+- Normal execution path.
+- Edge cases (empty array, single element, already sorted, reverse sorted).
+- Snapshot immutability verification (mutating later steps does not alter earlier snapshots).
+
+---
+
+## Testing & Quality Assurance
+
+The codebase maintains automated test suites using **Vitest** with 100% test passing rates across all generators, data structure operations, and derivation engines:
+
+- **Pure Generator Verification**: Validates correct state progression and final outputs.
+- **Snapshot Immutability Tests**: Guarantees that step generation deep-copies data arrays.
+- **Input Validation Tests**: Ensures invalid user inputs (out-of-range indices, unsorted arrays, malformed numbers) are cleanly caught.
+- **Registry & Schema Consistency Tests**: Verifies that every registered algorithm matches the required contract, code line mapping, and complexity shapes.
+
+To run tests in watch mode during development:
 ```bash
-npm install
-npm run dev      # start the dev server (http://localhost:5173)
-npm test         # run the Vitest unit tests
-npm run build    # production build
-npm run lint     # ESLint
+npx vitest
 ```
 
-## Project structure
+---
 
-```
-src/
-  algorithms/               # pure step generators (no UI logic)
-    algorithmRegistry.js    # single source of truth (see contract below)
-    complexityAnalysis.js   # complexity metadata + live-metric computation
-    linearSearch.js         # + LINES constants for code highlighting
-    binarySearch.js
-    bubbleSort.js
-    stackOps.js / queueOps.js / linkedList.js
-    stepTypes.js            # shared element states + counter labels
-  arrayHelpers.js           # pure input parsing / validation
-  hooks/useAlgorithmRunner.js  # step replay: play/pause/next/prev/reset/speed
-  components/
-    Sidebar/                # sections built from registry categories
-    CodePanel/              # C++ display with active-line highlight
-    Controls/               # ControlPanel (config-driven inputs) + PlaybackControls
-    Visualizer/             # ArrayVisualizer, BarVisualizer, StackVisualizer,
-                            # QueueVisualizer, LinkedListVisualizer, PointerLabels,
-                            # ComplexityCounter (+ complexityHelpers)
-    Theory/                 # TheoryButton + TheoryModal (dialog shell)
-                            # TheoryContent + Resources + blocks/ renderers
-    ComplexityAnalysis/     # ComplexityAnalysisButton + ComplexityAnalysisModal
-                            # (interactive complexity analysis dialog)
-  theory/                   # theory content: one file per concept
-                            # (linearSearch.js, ...), categories.js, index.js lookup
-```
+## Design Philosophy & Constraints
 
-## Theory cards
+- **Zero Heavy External UI Frameworks**: Built using pure semantic React and modern CSS variables without heavyweight component library dependencies, keeping load times near-instantaneous.
+- **Accessibility (`a11y`)**: Features high-contrast color palettes, visible keyboard focus rings, semantic buttons, and ARIA live regions for screen readers.
+- **Robust Error Handling**: Non-blocking form validation prevents runtime exceptions on user input errors.
+- **Predictable Performance**: Rendering updates are tied strictly to integer step transitions, preventing memory leaks and frame jitter.
 
-Every concept has a **Read & Learn More** button in the top-right corner of
-the Controls panel. It opens a theory dialog (sidebar stays visible) with an
-in-depth page: intuition, how it works, a worked trace, the exact C++ code
-from the visualizer, complexity analysis, trade-offs, usage, mistakes,
-variations, takeaways, videos and practice problems. Opening the dialog
-pauses playback without losing the current run; closing (Esc, backdrop,
-close button) returns focus to the button and the run continues untouched.
+---
 
-Content is plain JS data rendered by React — never HTML strings. The schema
-per concept (`src/theory/<concept>.js`):
+## License
 
-```js
-{
-  id: "BS", title: "Binary Search", category: "searching",
-  summary: "1-2 sentence definition",
-  sections: [
-    { id: "intuition", title: "The big idea", blocks: [...] },
-    // ...all ids in REQUIRED_SECTION_IDS (see src/theory/sections.js)
-  ],
-  videos: [{ title, channel, url, query, isSearchLink }],
-  practice: [{ title, platform, note }],   // names only, never URLs
-}
-```
-
-Block types (`src/components/Theory/blocks/`, see `BLOCK_TYPES` in
-`src/theory/index.js`): `paragraph`, `list`, `code`, `table`, `callout`
-(`tip`/`warning`/`note`), `trace` (static boxes in the visualizer style),
-`complexityTable` (rendered straight from the registry, so theory and
-visualizer can never disagree). Text supports `**bold**` and `` `code` ``.
-
-### How to add theory for a new algorithm
-
-1. Copy `src/theory/linearSearch.js` to `src/theory/<concept>.js`, set `id`
-   to the registry id, and fill in all eleven required sections plus
-   `videos` (3+) and `practice` (2+).
-2. Import the C++ from the algorithm module (e.g. `BINARY_SEARCH_CODE`) for
-   `code` blocks — never retype it, so it stays identical to the CodePanel.
-3. Register the file in `src/theory/index.js` (`theories` map). If the
-   category is new, add an intro to `src/theory/categories.js`.
-4. Run `npm test` — the theory suite checks id parity, required sections,
-   block validity, video URL forms, and code/complexity equality with the
-   registry.
-
-### How to replace a YouTube search link with a direct video link
-
-1. Open the search URL from the theory file and pick the video.
-2. Confirm the title and channel match the topic.
-3. In the theory file, set `url` to `https://www.youtube.com/watch?v=<id>`,
-   `title`/`channel` to the real ones, and `isSearchLink` to `false`.
-4. The UI then shows the video title and channel instead of the
-   "Search on YouTube" label. Never invent video IDs.
-
-## Complexity Analysis modal
-
-Every algorithm also has a **Complexity Analysis** button in the top-right
-corner of the Controls panel. It opens an interactive dialog that explains:
-
-1. **Best Case** — input conditions that produce the fastest run, with a
-   step-by-step operation-count derivation and the resulting asymptotic bound
-   (Omega / Theta).
-2. **Average Case** — assumptions about input distribution, expected operation
-   count derivation, and the resulting asymptotic bound.
-3. **Worst Case** — input conditions that produce the slowest run, maximum
-   operation-count derivation, and the resulting asymptotic bound (O).
-4. **Space Complexity** — input storage vs auxiliary storage, logical space
-   calculation, and the auxiliary space bound. Distinguishes algorithm memory
-   from visualization snapshot memory.
-
-The modal also shows **live operation counters** that stay in sync with the
-current algorithm step (comparisons, swaps, operations, or nodes visited
-depending on the algorithm). Moving to Previous / Next / Reset / Play / Pause
-keeps the counters consistent with the displayed step. Playback speed never
-affects the counts — they come directly from the step snapshots, not a timer.
-
-### Complexity metadata contract
-
-Each algorithm registry entry can include an optional `complexityAnalysis`
-field in `src/algorithms/complexityAnalysis.js`:
-
-```js
-{
-  inputSize: (params) => n,                                    // compute n
-  liveMetrics: [                                               // counters to show live
-    { key: "comparisons", label: "Comparisons", stepKey: "comparisons", description: "..." },
-  ],
-  stepOperation: (step) => "description of what this step does",
-  timeComplexity: {
-    best:   { conditions, expression, derivation[], bound, label },
-    average: { conditions, expression, derivation[], bound, label },
-    worst:  { conditions, expression, derivation[], bound, label },
-  },
-  spaceComplexity: {
-    inputStorage, auxiliaryStorage, totalSpace, bound,
-    derivation[], notes,
-  },
-  notes: "...",
-}
-```
-
-`bound` uses Omega (lower bound), Theta (tight bound), or O (upper bound) —
-these are not interchangeable names for best/average/worst cases.
-
-Derivations are human-readable step-by-step math (not computed at runtime),
-so the theory and the live counters can diverge intentionally — the live
-counter shows what *this* execution did; the bound describes *all possible*
-inputs of size n.
-
-## How to add a new algorithm
-
-## How to add a new algorithm
-
-1. Write a pure step generator in `src/algorithms/`:
-   `myAlgo(input...) -> steps[]`. Every step must be an **immutable snapshot**
-   with `{ ..., codeLine, message }` plus the counters your algorithm reports
-   (e.g. `comparisons`). Never mutate a previous step — copy data with
-   `[...data]`.
-2. Add a `LINES` object next to the generator mapping names to 1-based lines
-   of your C++ snippet (e.g. `LINES = { FOR_LOOP: 4, COMPARE: 5 }`), and use
-   those names in the steps instead of magic numbers.
-3. Register it in `src/algorithms/algorithmRegistry.js`:
-
-```js
-MY: {
-  name: "My Algo",
-  category: "searching",       // searching | sorting | data-structures
-  visualizer: "array",         // array | bars | stack | queue | linkedList
-  algorithm: myAlgo,
-  code: `...C++ source...`,    // string, or { op: code } per operation
-  inputs: { array: true, target: true },
-  complexity: { best: "O(1)", average: "O(n)", worst: "O(n)", space: "O(1)" },
-  counters: ["comparisons"],   // live counters read from each step
-},
-```
-
-4. Optionally add a `complexityAnalysis` entry in
-   `src/algorithms/complexityAnalysis.js` with the mathematical derivations,
-   live-metric configuration, and space analysis for your algorithm. See the
-   "Complexity Analysis modal" section above for the contract.
-
-5. If you need a new visual style, add a component in
-   `src/components/Visualizer/` (with its own CSS file using the tokens in
-   `src/index.css`), map it in the `VISUALIZERS` lookup in `src/App.jsx`,
-   and reference it from the registry entry.
-6. Add Vitest tests for the generator: normal case, empty input, single
-   element, duplicates, not-found / error paths, and the invariant that
-   steps never mutate earlier steps. Run `npm test`, `npm run lint`, and
-   `npm run build` — all three must pass.
+This project is licensed under the [MIT License](LICENSE).

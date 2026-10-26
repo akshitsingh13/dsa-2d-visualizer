@@ -3,8 +3,12 @@ import "./GraphVisualizer.css";
 
 const NODE_RADIUS = 22;
 
-// Layout algorithm: Circular layout arranges n vertices evenly around a circle.
-// This guarantees deterministic, clutter-free rendering for unweighted graphs.
+/**
+ * Computes deterministic circular layout coordinates for graph vertices and edges.
+ *
+ * @param {{ vertices: string[], adj: Object.<string, string[]> }} graph
+ * @returns {{ nodes: Array, edges: Array, width: number, height: number }}
+ */
 function computeGraphLayout(graph) {
   if (!graph || !graph.vertices || graph.vertices.length === 0) {
     return { nodes: [], edges: [], width: 340, height: 300 };
@@ -61,6 +65,16 @@ function computeGraphLayout(graph) {
   return { nodes, edges, width, height };
 }
 
+/**
+ * GraphVisualizer component.
+ * Renders an undirected graph with vertices arranged in a circular topology and connecting edges,
+ * tracking traversal sequence, visited sets, and active frontiers for BFS and DFS.
+ *
+ * @param {Object} props
+ * @param {Object} [props.step] Current animation step state
+ * @param {Object} [props.dataState] Graph state when step is idle
+ * @returns {JSX.Element}
+ */
 function GraphVisualizer({ step, dataState }) {
   const { nodes, edges, width, height } = useMemo(() => {
     const currentGraph = step ? step.data : (dataState ?? { vertices: [], adj: {} });

@@ -1,10 +1,16 @@
-// Pure input parsing / validation helpers for the ControlPanel.
-// Each parser returns { ok: true, ... } or { ok: false, error: "..." }
-// so the UI only has to display the error message.
+/**
+ * Pure input parsing and validation helpers for the visualizer ControlPanel.
+ * Each parser returns `{ ok: true, ... }` or `{ ok: false, error: string }`
+ * ensuring predictable, testable UI state without uncaught runtime exceptions.
+ */
 
-// Parse a comma-separated string into an array of numbers.
-// Blank entries ("10,,20" or "10,20,") are rejected with a clear error
-// instead of silently becoming 0 via Number("").
+/**
+ * Parses a comma-separated string into an array of numeric values.
+ * Rejects blank entries ("10,,20" or "10,20,") and non-numeric inputs.
+ *
+ * @param {string} raw - Comma-separated input string.
+ * @returns {{ ok: true, array: number[] } | { ok: false, error: string }}
+ */
 export function parseArrayInput(raw) {
   if (raw == null || raw.trim() === "") {
     return { ok: false, error: "Please enter array values." };
@@ -39,7 +45,13 @@ export function parseArrayInput(raw) {
   return { ok: true, array };
 }
 
-// Parse a single target / value input into a number.
+/**
+ * Parses a single input into a valid number.
+ *
+ * @param {string|number} raw - Input value.
+ * @param {string} [fieldName="Value"] - Name used in human-friendly validation error.
+ * @returns {{ ok: true, value: number } | { ok: false, error: string }}
+ */
 export function parseNumberInput(raw, fieldName = "Value") {
   if (raw == null || String(raw).trim() === "") {
     return { ok: false, error: `Please enter ${fieldName.toLowerCase()}.` };
@@ -54,7 +66,12 @@ export function parseNumberInput(raw, fieldName = "Value") {
   return { ok: true, value };
 }
 
-// Parse a non-negative integer index input.
+/**
+ * Parses a non-negative integer index input.
+ *
+ * @param {string|number} raw - Input value.
+ * @returns {{ ok: true, value: number } | { ok: false, error: string }}
+ */
 export function parseIndexInput(raw) {
   if (raw == null || String(raw).trim() === "") {
     return { ok: false, error: "Please enter an index." };
@@ -69,8 +86,13 @@ export function parseIndexInput(raw) {
   return { ok: true, value };
 }
 
-// Check whether an array is sorted in non-decreasing order.
-// Used by Binary Search, which requires a sorted input array.
+/**
+ * Checks whether an array is sorted in non-decreasing order.
+ * Essential precondition for Binary Search.
+ *
+ * @param {number[]} array - Array to check.
+ * @returns {boolean} True if sorted in ascending order.
+ */
 export function isSortedAscending(array) {
   for (let i = 1; i < array.length; i++) {
     if (array[i] < array[i - 1]) {

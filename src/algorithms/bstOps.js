@@ -208,11 +208,25 @@ export function createNode(value) {
   };
 }
 
-// Pure step generator for BST operations.
-// Parameters:
-//   data: root node of tree (or null)
-//   params: { operation, value }
-//   prevCount: cumulative operations counter
+/**
+ * Pure step generator for Binary Search Tree operations.
+ * Operates on immutable tree snapshots:
+ *   { id: number, value: number, left: Node|null, right: Node|null }
+ *
+ * Supported operations:
+ *   - insert: O(h) time, O(h) aux call stack (duplicates are safely ignored)
+ *   - search: O(h) time, O(h) aux call stack (branches left or right)
+ *   - delete: O(h) time, O(h) aux call stack (handles leaf, 1-child, 2-child cases)
+ *   - inorder / preorder / postorder: Θ(n) time, O(h) aux call stack
+ *   - clear: Θ(n) time, O(h) aux call stack
+ *
+ * Where tree height h = O(log n) when balanced, and h = O(n) when skewed.
+ *
+ * @param {object|null} data - Root node of current tree.
+ * @param {{ operation: string, value?: number }} params - Operation details.
+ * @param {number} prevCount - Cumulative operations counter.
+ * @returns {Array<object>} Sequence of immutable step snapshots for animation.
+ */
 export default function bstOperation(data, params, prevCount = 0) {
   void prevCount;
   const { operation, value } = params;

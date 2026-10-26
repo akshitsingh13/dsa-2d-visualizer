@@ -13,7 +13,7 @@ import graphOperation, { GRAPH_CODE, GRAPH_OPERATIONS } from "./graphOps";
 //   {
 //     name: "Binary Search",
 //     category: "searching" | "sorting" | "data-structures",
-//     visualizer: "array" | "bars" | "stack" | "queue" | "linkedList",
+//     visualizer: "array" | "bars" | "stack" | "queue" | "linkedList" | "tree" | "graph",
 //     algorithm: fn,                 // pure step generator (no UI logic)
 //     code: `...C++ source...`,      // shown in CodePanel (string, or an
 //                                    // object / function keyed by operation
@@ -21,7 +21,7 @@ import graphOperation, { GRAPH_CODE, GRAPH_OPERATIONS } from "./graphOps";
 //     inputs: { array: true, target: true, ... },
 //                                    // drives ControlPanel. Supported keys:
 //                                    // array, target, operation (string[] of
-//                                    // options), value, index.
+//                                    // options), value, index, targetVertex.
 //     operationFields: { push: ["value"], ... },  // optional: which extra
 //                                    // fields each operation needs
 //     requiresSortedArray: true,     // optional: reject unsorted input

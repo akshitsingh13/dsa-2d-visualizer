@@ -39,9 +39,22 @@ export const LINES = {
   clear: { FUNC: 1, RESET_FRONT: 2, RESET_REAR: 3 },
 };
 
-// Pure step generator: queueOperation(data, { operation, value }, prevCount)
-// -> steps[]. Failed operations (overflow / underflow) leave the state
-// unchanged and do not increment the operation counter.
+/**
+ * Pure step generator for Array-backed Queue operations.
+ * State persists between runs: every generator call starts from current state
+ * and returns immutable snapshot steps.
+ *
+ * Supported operations:
+ *   - enqueue: appends value to rear (checks capacity limit) -> O(1) time, O(1) aux space
+ *   - dequeue: removes and returns front value -> O(1) time, O(1) aux space
+ *   - peek: reads front value without removal -> O(1) time, O(1) aux space
+ *   - clear: resets front/rear indices -> O(1) time, O(1) aux space
+ *
+ * @param {number[]} data - Current queue items (FRONT at index 0, REAR at last).
+ * @param {{ operation: 'enqueue'|'dequeue'|'peek'|'clear', value?: number }} params - Operation details.
+ * @param {number} prevCount - Cumulative successful operations counter.
+ * @returns {Array<object>} Sequence of immutable step snapshots for animation.
+ */
 function queueOperation(data, params, prevCount = 0) {
   const { operation, value } = params;
   const steps = [];

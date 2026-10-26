@@ -4,8 +4,13 @@ import "./TreeVisualizer.css";
 const NODE_RADIUS = 22;
 const LEVEL_HEIGHT = 64;
 
-// Calculate tree layout coordinates (x, y) using recursive in-order traversal
-// for x spacing and depth for y coordinate.
+/**
+ * Computes deterministic (x, y) 2D layout coordinates for a binary tree using
+ * recursive in-order traversal for monotonic horizontal spacing and depth for vertical position.
+ *
+ * @param {Object|null} root - Root node of the binary tree
+ * @returns {{ nodes: Array, edges: Array, width: number, height: number }}
+ */
 function computeTreeLayout(root) {
   if (!root) return { nodes: [], edges: [], width: 200, height: 200 };
 
@@ -79,6 +84,16 @@ function computeTreeLayout(root) {
   return { nodes, edges, width: totalWidth, height: totalHeight };
 }
 
+/**
+ * TreeVisualizer component.
+ * Renders a Binary Search Tree (BST) using SVG nodes and connecting edges,
+ * highlighting traversal paths, comparison nodes, and target discoveries.
+ *
+ * @param {Object} props
+ * @param {Object} [props.step] Current animation step state
+ * @param {Object|null} [props.dataState] Tree root node when step is idle
+ * @returns {JSX.Element}
+ */
 function TreeVisualizer({ step, dataState }) {
   const treeRoot = step ? step.data : (dataState ?? null);
 

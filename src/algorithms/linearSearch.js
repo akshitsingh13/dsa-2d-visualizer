@@ -25,8 +25,21 @@ export const LINES = {
   RETURN_EMPTY: 11,
 };
 
-// Pure step generator: returns an array of immutable step snapshots.
-// Signature: linearSearch(array, target) -> steps[]
+/**
+ * Pure step generator for Linear Search.
+ * Iterates through the collection one element at a time, comparing against the target.
+ *
+ * Time Complexity:
+ *   - Best Case: Ω(1) / Θ(1) when target is at index 0.
+ *   - Average Case: Θ(n) when target is uniformly distributed.
+ *   - Worst Case: O(n) / Θ(n) when target is at the end or absent.
+ * Auxiliary Space:
+ *   - O(1) iterative scan using constant scalar variables.
+ *
+ * @param {number[]} array - Input list of numbers (sorted or unsorted).
+ * @param {number} target - Value to find.
+ * @returns {Array<object>} Sequence of immutable step snapshots for animation.
+ */
 function linearSearch(array, target) {
   const steps = [];
   let comparisons = 0;

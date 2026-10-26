@@ -1,5 +1,9 @@
 import "./ComplexityAnalysisButton.css";
 
+/**
+ * Trigger button opening the interactive Complexity Analysis derivation modal.
+ * Embedded inside the Time & Space Complexity panel header.
+ */
 function ComplexityAnalysisButton({ onClick, conceptName, ref }) {
   return (
     <button

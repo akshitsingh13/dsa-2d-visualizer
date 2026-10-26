@@ -161,7 +161,24 @@ export function createDefaultGraph() {
   };
 }
 
-// Pure step generator: graphOperation(data, params, prevCount)
+/**
+ * Pure step generator for Unweighted Undirected Graph operations.
+ * Graph representation: Adjacency list mapping vertex ID -> array of neighbors.
+ *
+ * Supported operations:
+ *   - add-vertex: O(1) time, O(1) aux space
+ *   - add-edge: O(deg(u)) duplicate check, O(1) aux space
+ *   - remove-vertex: O(V + E) time, O(1) aux space
+ *   - remove-edge: O(deg(u)) time, O(1) aux space
+ *   - bfs: O(V + E) time, O(V) aux space (FIFO queue + visited set)
+ *   - dfs: O(V + E) time, O(V) aux call stack (backtracking recursion + visited set)
+ *   - clear: Θ(1) container reset
+ *
+ * @param {{ vertices: number[], adj: Object }} data - Current graph adjacency list.
+ * @param {{ operation: string, value?: number, targetVertex?: number }} params - Operation details.
+ * @param {number} prevCount - Cumulative operations counter.
+ * @returns {Array<object>} Sequence of immutable step snapshots for animation.
+ */
 export default function graphOperation(data, params, prevCount = 0) {
   void prevCount;
   const { operation, value, targetVertex } = params;

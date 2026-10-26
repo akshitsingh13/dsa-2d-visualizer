@@ -2,6 +2,16 @@ import { Fragment } from "react";
 import { PointerLabel } from "./PointerLabels";
 import "./LinkedListVisualizer.css";
 
+/**
+ * LinkedListVisualizer component.
+ * Renders a singly linked list with nodes, directional pointer arrows, HEAD/TAIL indicators,
+ * and traversal/insertion/deletion highlight states.
+ *
+ * @param {Object} props
+ * @param {Object} [props.step] Current animation step state
+ * @param {number[]} [props.dataState] Underlying list values when step is idle
+ * @returns {JSX.Element}
+ */
 function LinkedListVisualizer({ step, dataState }) {
   const list = step ? step.data : (dataState ?? []);
 

@@ -49,10 +49,24 @@ export const BINARY_SEARCH_CODE = `int binarySearch(vector<int> arr, int target)
     return -1;
 }`;
 
-// Pure step generator: binarySearch(array, target) -> steps[]
-// The input array must be sorted (enforced by the ControlPanel); the
-// generator itself assumes sorted input and handles empty, single-element,
-// duplicate and not-found cases.
+/**
+ * Pure step generator for Binary Search.
+ * Repeatedly divides a sorted search range in half, comparing the midpoint with the target.
+ *
+ * Preconditions:
+ *   - Input array MUST be sorted in ascending order (validated by ControlPanel).
+ *
+ * Time Complexity:
+ *   - Best Case: Ω(1) / Θ(1) when target is at the initial middle index.
+ *   - Average Case: Θ(log n) expected steps.
+ *   - Worst Case: O(log n) / Θ(log n) when target requires halving down to 1 element or is absent.
+ * Auxiliary Space:
+ *   - O(1) iterative execution with low, high, mid pointers.
+ *
+ * @param {number[]} array - Sorted array in ascending order.
+ * @param {number} target - Value to find.
+ * @returns {Array<object>} Sequence of immutable step snapshots for animation.
+ */
 function binarySearch(array, target) {
   const steps = [];
   const data = [...array];

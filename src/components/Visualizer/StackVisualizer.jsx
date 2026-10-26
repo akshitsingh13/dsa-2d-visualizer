@@ -1,5 +1,16 @@
 import "./StackVisualizer.css";
 
+/**
+ * StackVisualizer component.
+ * Renders a Last-In, First-Out (LIFO) stack column with capacity markers,
+ * top-of-stack indicator, and push/pop/peek highlights.
+ *
+ * @param {Object} props
+ * @param {Object} [props.step] Current animation step state
+ * @param {{ capacity: number }} [props.config] Stack configuration
+ * @param {number[]} [props.dataState] Underlying stack data when step is idle
+ * @returns {JSX.Element}
+ */
 function StackVisualizer({ step, config, dataState }) {
   const items = step ? step.data : (dataState ?? []);
   const capacity = config?.capacity ?? 8;

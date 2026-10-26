@@ -1,5 +1,16 @@
 import "./QueueVisualizer.css";
 
+/**
+ * QueueVisualizer component.
+ * Renders a First-In, First-Out (FIFO) queue with front/rear pointer labels,
+ * direction markers, and enqueue/dequeue animations.
+ *
+ * @param {Object} props
+ * @param {Object} [props.step] Current animation step state
+ * @param {{ capacity: number }} [props.config] Queue configuration
+ * @param {number[]} [props.dataState] Underlying queue data when step is idle
+ * @returns {JSX.Element}
+ */
 function QueueVisualizer({ step, config, dataState }) {
   const items = step ? step.data : (dataState ?? []);
   const capacity = config?.capacity ?? 8;

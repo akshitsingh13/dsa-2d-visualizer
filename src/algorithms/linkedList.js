@@ -167,9 +167,24 @@ export const LINES = {
   traverse: { FUNC: 6, INIT: 7, LOOP: 8, VISIT: 9, ADVANCE: 10 },
 };
 
-// Pure step generator: linkedListOperation(data, { operation, value, index })
-// -> steps[]. Error paths (empty list, bad index, value not found) produce a
-// clear error-styled message and leave the list unchanged.
+/**
+ * Pure step generator for Singly Linked List operations.
+ * State persists between runs: every generator call starts from current state
+ * and returns immutable snapshot steps with pointer labels (`curr`, `prev`, `HEAD`).
+ *
+ * Supported operations:
+ *   - insert-head: O(1) time, O(1) aux space (direct head link)
+ *   - insert-tail: O(n) time, O(1) aux space (requires walking to tail node)
+ *   - insert-index: O(n) time, O(1) aux space (walks to position index - 1)
+ *   - delete-head: O(1) time, O(1) aux space (swings head to next node)
+ *   - delete-value: O(n) time, O(1) aux space (linear scan to bypass node)
+ *   - search: O(n) time, O(1) aux space (sequential node scan)
+ *   - traverse: O(n) time, O(1) aux space (visits all n nodes)
+ *
+ * @param {number[]} data - Current list nodes array (head at index 0).
+ * @param {{ operation: string, value?: number, index?: number }} params - Operation details.
+ * @returns {Array<object>} Sequence of immutable step snapshots for animation.
+ */
 function linkedListOperation(data, params) {
   const { operation, value, index } = params;
   const steps = [];
