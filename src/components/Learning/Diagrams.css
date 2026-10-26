@@ -1,0 +1,422 @@
+/* Educational Diagrams Styling */
+.edu-diagram-box {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background-color: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  margin: 10px 0;
+}
+
+.diagram-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 10px;
+}
+
+.diagram-title {
+  font-family: var(--font-heading);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.diagram-step-counter {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  background-color: var(--bg-base);
+  padding: 3px 8px;
+  border-radius: 12px;
+}
+
+.diag-toggle-row {
+  display: flex;
+  gap: 6px;
+}
+
+.diag-mode-pill {
+  padding: 4px 10px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  background-color: var(--bg-base);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.diag-mode-pill.active {
+  background-color: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+/* Diagram Canvas */
+.diagram-canvas {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 10px;
+  background-color: var(--bg-base);
+  border-radius: var(--radius-sm);
+  min-height: 120px;
+}
+
+.diagram-canvas.vertical-center {
+  min-height: 180px;
+}
+
+/* Array Diagram */
+.array-diagram-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.array-diagram-cell-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.cell-index {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-family: var(--font-mono, monospace);
+}
+
+.array-diagram-cell {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-panel);
+  border: 2px solid var(--border-subtle);
+  border-radius: 6px;
+  font-family: var(--font-mono, monospace);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+}
+
+.array-diagram-cell.comparing {
+  border-color: var(--accent);
+  background-color: #fff4ed;
+  color: var(--accent);
+  transform: scale(1.05);
+}
+
+.array-diagram-cell.found {
+  border-color: #0e9f6e;
+  background-color: #def7ec;
+  color: #03543f;
+  transform: scale(1.08);
+}
+
+.array-diagram-cell.checked {
+  opacity: 0.6;
+}
+
+.array-diagram-cell.discarded {
+  opacity: 0.35;
+  text-decoration: line-through;
+  background-color: #f3f4f6;
+}
+
+.array-diagram-cell.mid {
+  border-color: var(--accent);
+  background-color: #fff4ed;
+  color: var(--accent);
+}
+
+.array-diagram-cell.sorted {
+  border-color: #3f83f8;
+  background-color: #e1effe;
+  color: #1e429f;
+}
+
+.cell-pointer {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-top: 2px;
+}
+
+/* Stack Diagram */
+.stack-vertical-container {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.stack-slot-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.stack-box-column {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 140px;
+}
+
+.stack-cell {
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  background-color: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  font-family: var(--font-mono, monospace);
+  font-size: 14px;
+}
+
+.stack-cell.filled {
+  background-color: var(--bg-panel);
+  font-weight: 700;
+}
+
+.stack-cell.is-top {
+  border-color: var(--accent);
+  background-color: #fff4ed;
+  color: var(--accent);
+}
+
+.stack-slot-index {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.top-indicator {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* Queue Diagram */
+.queue-horizontal-track {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.queue-slot-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 84px;
+  justify-content: space-between;
+}
+
+.queue-pointer-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--accent);
+  height: 14px;
+}
+
+.queue-cell {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  font-family: var(--font-mono, monospace);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.queue-cell.filled {
+  border-color: var(--accent);
+  background-color: #fff4ed;
+  color: var(--accent);
+}
+
+/* Linked List Diagram */
+.ll-diagram-chain {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.ll-head-tag {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-right: 4px;
+}
+
+.ll-node-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ll-node-card {
+  display: flex;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  overflow: hidden;
+  background-color: var(--bg-panel);
+}
+
+.ll-node-card.new {
+  border-color: var(--accent);
+  background-color: #fff4ed;
+}
+
+.ll-data {
+  padding: 8px 12px;
+  font-family: var(--font-mono, monospace);
+  font-size: 14px;
+  font-weight: 700;
+  border-right: 1px solid var(--border-subtle);
+}
+
+.ll-next-box {
+  padding: 8px 10px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  background-color: var(--bg-base);
+}
+
+.ll-arrow-line {
+  font-size: 16px;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.ll-null-tag {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  background-color: var(--bg-base);
+  padding: 4px 6px;
+  border-radius: 4px;
+}
+
+/* Tree & Graph SVGs */
+.tree-svg-node {
+  fill: var(--bg-panel);
+  stroke: var(--accent);
+  stroke-width: 2px;
+}
+
+.tree-svg-text {
+  font-family: var(--font-mono, monospace);
+  font-size: 13px;
+  font-weight: 700;
+  fill: var(--text-primary);
+}
+
+.graph-svg-node {
+  fill: var(--bg-panel);
+  stroke: var(--border-subtle);
+  stroke-width: 2px;
+  transition: all 0.2s ease;
+}
+
+.graph-svg-node.visited {
+  fill: #fff4ed;
+  stroke: var(--accent);
+}
+
+.graph-svg-node.active {
+  stroke-width: 3px;
+  fill: var(--accent);
+}
+
+.graph-svg-text {
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+  font-weight: 700;
+  fill: var(--text-primary);
+}
+
+.traversal-order-chip {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--text-primary);
+  background-color: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+/* Caption & Controls */
+.diagram-caption {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  padding: 8px 12px;
+  background-color: var(--bg-base);
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.metric-tag {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.diagram-controls {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.diag-nav-btn {
+  padding: 6px 14px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  background-color: var(--bg-panel);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.diag-nav-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.diag-nav-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.diag-nav-btn.primary {
+  background-color: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.diag-nav-btn.primary:hover:not(:disabled) {
+  opacity: 0.9;
+  color: #fff;
+}
