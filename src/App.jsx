@@ -15,10 +15,7 @@ import algorithmRegistry from "./algorithms/algorithmRegistry";
 import ControlPanel from "./components/Controls/ControlPanel";
 import CodePanel from "./components/CodePanel/CodePanel";
 import ComplexityCounter from "./components/Visualizer/ComplexityCounter";
-import TheoryButton from "./components/Theory/TheoryButton";
-import TheoryModal from "./components/Theory/TheoryModal";
 import ComplexityAnalysisModal from "./components/ComplexityAnalysis/ComplexityAnalysisModal";
-import { getCategoryTheory, getTheory } from "./theory/index";
 import { getComplexityAnalysis } from "./algorithms/complexityAnalysis";
 import { createDefaultGraph } from "./algorithms/graphOps";
 import InfoButton from "./components/Learning/InfoButton";
@@ -70,10 +67,8 @@ function App() {
   // Input params from the most recent Run, used by the complexity modal
   // to compute input size n and show algorithm-specific context.
   const [currentParams, setCurrentParams] = useState(null);
-  const [theoryOpen, setTheoryOpen] = useState(false);
   const [complexityOpen, setComplexityOpen] = useState(false);
   const [learningOpen, setLearningOpen] = useState(false);
-  const theoryButtonRef = useRef(null);
   const complexityButtonRef = useRef(null);
   const infoButtonRef = useRef(null);
   const {
@@ -107,27 +102,8 @@ function App() {
     ArrayVisualizer;
 
   const handleAlgorithmChange = (algorithmId) => {
-    // Switching concepts from the sidebar while the theory dialog is open
-    // closes the dialog and switches normally. Focus stays where the user
-    // put it (on the sidebar), so it is not returned to the theory button.
-    if (theoryOpen) {
-      setTheoryOpen(false);
-    }
-
     setDsaConcept(algorithmId);
     reset();
-  };
-
-  const openTheory = () => {
-    // Pause playback but keep the steps and current index, so closing the
-    // dialog returns the user exactly where they were.
-    pause();
-    setTheoryOpen(true);
-  };
-
-  const closeTheory = () => {
-    setTheoryOpen(false);
-    theoryButtonRef.current?.focus();
   };
 
   const openComplexity = () => {
@@ -297,14 +273,6 @@ function App() {
         </div>
         )}
       </div>
-
-      {theoryOpen && getTheory(dsaConcept) ? (
-        <TheoryModal
-          theory={getTheory(dsaConcept)}
-          categoryTheory={getCategoryTheory(algorithmConfig.category)}
-          onClose={closeTheory}
-        />
-      ) : null}
 
       {complexityOpen && getComplexityAnalysis(dsaConcept) ? (
         <ComplexityAnalysisModal

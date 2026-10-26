@@ -214,6 +214,7 @@ export function createNode(value) {
 //   params: { operation, value }
 //   prevCount: cumulative operations counter
 export default function bstOperation(data, params, prevCount = 0) {
+  void prevCount;
   const { operation, value } = params;
   const steps = [];
   let root = cloneTree(data);

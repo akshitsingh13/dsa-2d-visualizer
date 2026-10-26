@@ -62,12 +62,10 @@ function computeGraphLayout(graph) {
 }
 
 function GraphVisualizer({ step, dataState }) {
-  const currentGraph = step ? step.data : (dataState ?? { vertices: [], adj: {} });
-
-  const { nodes, edges, width, height } = useMemo(
-    () => computeGraphLayout(currentGraph),
-    [currentGraph],
-  );
+  const { nodes, edges, width, height } = useMemo(() => {
+    const currentGraph = step ? step.data : (dataState ?? { vertices: [], adj: {} });
+    return computeGraphLayout(currentGraph);
+  }, [step, dataState]);
 
   const activeVertex = step?.activeVertex;
   const activeEdge = step?.activeEdge;

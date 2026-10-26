@@ -163,6 +163,7 @@ export function createDefaultGraph() {
 
 // Pure step generator: graphOperation(data, params, prevCount)
 export default function graphOperation(data, params, prevCount = 0) {
+  void prevCount;
   const { operation, value, targetVertex } = params;
   const steps = [];
   const graph = cloneGraph(data);

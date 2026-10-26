@@ -11,34 +11,8 @@ function computeTreeLayout(root) {
 
   const nodes = [];
   const edges = [];
-  let nextX = 1;
 
-  // First pass: in-order traversal gives clean monotonic x-coordinates without overlaps
-  function layoutPass(node, depth, parentPos = null) {
-    if (!node) return null;
-
-    // Recurse left
-    const leftPos = layoutPass(node.left, depth + 1);
-
-    // Current node x is nextX
-    const currentXIndex = nextX++;
-    const currentPos = {
-      id: node.id,
-      value: node.value,
-      depth,
-      xIndex: currentXIndex,
-      y: depth * LEVEL_HEIGHT + 36,
-      node,
-    };
-
-    // Recurse right
-    const rightPos = layoutPass(node.right, depth + 1);
-
-    return currentPos;
-  }
-
-  // Second pass: collect nodes and edges with physical pixel positions
-  // We do an in-order layout to determine relative x positions
+  // In-order traversal gives clean monotonic x-coordinates without overlaps
   const rawNodes = [];
   function collect(node, depth, parentNode = null) {
     if (!node) return;

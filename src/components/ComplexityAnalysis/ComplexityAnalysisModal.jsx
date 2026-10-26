@@ -86,11 +86,13 @@ function WorkedExampleBox({ workedExample }) {
 function DerivationStepper({ steps, caseTitle, bound, exactBound }) {
   const [currentStepIdx, setCurrentStepIdx] = useState(0);
   const [showFull, setShowFull] = useState(false);
+  const [prevCase, setPrevCase] = useState(caseTitle);
 
-  // Reset current step when case changes
-  useEffect(() => {
+  // Adjust state during render when props change (idiomatic React pattern)
+  if (prevCase !== caseTitle) {
+    setPrevCase(caseTitle);
     setCurrentStepIdx(0);
-  }, [caseTitle]);
+  }
 
   if (!steps || steps.length === 0) {
     return <p className="derivation-empty">No derivation steps available.</p>;

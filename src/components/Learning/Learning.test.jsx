@@ -4,7 +4,7 @@ import { renderToString } from "react-dom/server";
 import InfoButton from "./InfoButton";
 import LearningPage from "./LearningPage";
 import algorithmRegistry from "../../algorithms/algorithmRegistry";
-import { TOPIC_RESOURCES, getTopicResources } from "../../data/learningResources";
+import { getTopicResources } from "../../data/learningResources";
 
 const REGISTRY_IDS = Object.keys(algorithmRegistry);
 

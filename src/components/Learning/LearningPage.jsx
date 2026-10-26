@@ -1,7 +1,6 @@
-import { useState } from "react";
 import "./LearningPage.css";
 import "./Diagrams.css";
-import { getTheory, getCategoryTheory } from "../../theory/index";
+import { getTheory } from "../../theory/index";
 import { getTopicResources } from "../../data/learningResources";
 import { resolveComplexity } from "../Visualizer/complexityHelpers";
 import { renderRichText } from "../Theory/blocks/RichText";

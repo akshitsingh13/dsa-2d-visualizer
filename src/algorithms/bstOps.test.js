@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 import bstOperation, {
   BST_CODE,
   BST_OPERATIONS,
-  cloneTree,
   countNodes,
   treeToInorder,
 } from "./bstOps";
