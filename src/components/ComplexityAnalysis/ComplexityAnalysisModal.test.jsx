@@ -4,7 +4,7 @@ import { renderToString } from "react-dom/server";
 import ComplexityAnalysisModal from "./ComplexityAnalysisModal";
 import { getComplexityAnalysis } from "../../algorithms/complexityAnalysis";
 
-const THEORY_IDS = ["LS", "BS", "BUB", "STK", "QUE", "LL"];
+const THEORY_IDS = ["LS", "BS", "BUB", "STK", "QUE", "LL", "BST", "GRAPH"];
 
 describe("ComplexityAnalysisModal smoke tests", () => {
   it("renders the modal for every algorithm with dialog semantics", () => {
@@ -35,7 +35,7 @@ describe("ComplexityAnalysisModal smoke tests", () => {
     }
   });
 
-  it("renders all four required sections for every algorithm", () => {
+  it("renders all four required cases and derivation stepper for every algorithm", () => {
     const config = {
       id: "BUB",
       name: "Bubble Sort",
@@ -52,17 +52,16 @@ describe("ComplexityAnalysisModal smoke tests", () => {
       }),
     );
 
-    // Best / Average / Worst sections (Space tab not active by default in SSR)
+    // Case selectors present
+    expect(html).toMatch(/Worst Case/);
     expect(html).toMatch(/Best Case/);
     expect(html).toMatch(/Average Case/);
-    expect(html).toMatch(/Worst Case/);
 
-    // Derivation blocks present
-    expect(html).toMatch(/derivation-line/);
-
-    // Live counters
-    expect(html).toMatch(/Comparisons/);
-    expect(html).toMatch(/Swaps/);
+    // Derivation Stepper present
+    expect(html).toMatch(/Mathematical Derivation/);
+    expect(html).toMatch(/Step 1/);
+    expect(html).toMatch(/Next Step/);
+    expect(html).toMatch(/Show Full Derivation/);
   });
 
   it("renders live counters with values from current step", () => {
@@ -84,16 +83,12 @@ describe("ComplexityAnalysisModal smoke tests", () => {
       }),
     );
 
-    // SSR inserts <!-- --> comments between text and dynamic values, so use
-    // [\s\S]* to match across comment nodes.
-    expect(html).toMatch(/Input size n[\s\S]*5/);
-    expect(html).toMatch(/7 comparisons/);
+    expect(html).toMatch(/Current input size n[\s\S]*5/);
     expect(html).toMatch(/data-key="comparisons">7/);
+    expect(html).toMatch(/Live Execution Verification/);
   });
 
   it("renders space complexity panel when space tab is active", () => {
-    // SSR renders the default "time" tab. To test the space panel, we check
-    // that the Space Complexity tab exists and the time panel content renders.
     const config = {
       id: "STK",
       name: "Stack",
@@ -111,11 +106,10 @@ describe("ComplexityAnalysisModal smoke tests", () => {
     );
 
     expect(html).toMatch(/Space Complexity/);
-    expect(html).toMatch(/Input size n[\s\S]*3/);
-    expect(html).toMatch(/Operations/);
+    expect(html).toMatch(/Current input size n[\s\S]*3/);
   });
 
-  it("renders derivation steps for best case (default active tab)", () => {
+  it("renders derivation steps for worst case (default active case)", () => {
     const config = {
       id: "BS",
       name: "Binary Search",
@@ -132,10 +126,8 @@ describe("ComplexityAnalysisModal smoke tests", () => {
       }),
     );
 
-    // Best case derivation (default active case)
-    expect(html).toMatch(/1 comparison/);
-    expect(html).toMatch(/Compute mid/);
-    expect(html).toMatch(/O\(1\)/);
+    expect(html).toMatch(/Mathematical Derivation/);
+    expect(html).toMatch(/O\(log n\)/);
   });
 
   it("distinguishes live observed vs theoretical bounds", () => {
@@ -155,10 +147,78 @@ describe("ComplexityAnalysisModal smoke tests", () => {
       }),
     );
 
-    expect(html).toMatch(/Observed so far/);
-    expect(html).toMatch(/Theoretical/);
-    expect(html).toMatch(
-      /cannot be inferred from a single execution/,
+    expect(html).toMatch(/Live Execution Verification/);
+    expect(html).toMatch(/cannot be inferred from a single execution/);
+  });
+
+  it("renders BST and Graph complexity analysis with mathematical derivation", () => {
+    const bstConfig = {
+      id: "BST",
+      name: "Binary Search Tree",
+      category: "data-structures",
+    };
+
+    const bstHtml = renderToString(
+      h(ComplexityAnalysisModal, {
+        algorithmConfig: bstConfig,
+        currentStepIndex: 0,
+        steps: [{ comparisons: 2, nodesVisited: 3 }],
+        params: { data: { size: 7 } },
+        onClose: () => {},
+      }),
     );
+
+    expect(bstHtml).toMatch(/Binary Search Tree/);
+    expect(bstHtml).toMatch(/Mathematical Derivation/);
+    expect(bstHtml).toMatch(/Current input size n[\s\S]*7/);
+    expect(bstHtml).toMatch(/Final Asymptotic Bound/);
+
+    const graphConfig = {
+      id: "GRAPH",
+      name: "Graph",
+      category: "data-structures",
+    };
+
+    const graphHtml = renderToString(
+      h(ComplexityAnalysisModal, {
+        algorithmConfig: graphConfig,
+        currentStepIndex: 0,
+        steps: [{ nodesVisited: 4, edgesExplored: 6 }],
+        params: { data: { vertices: [1, 2, 3, 4] } },
+        onClose: () => {},
+      }),
+    );
+
+    expect(graphHtml).toMatch(/Graph/);
+    expect(graphHtml).toMatch(/Mathematical Derivation/);
+    expect(graphHtml).toMatch(/Current input size n[\s\S]*4/);
+  });
+
+  it("renders operation-specific definitions and derivations for Linked List insert-head", () => {
+    const llConfig = {
+      id: "LL",
+      name: "Linked List",
+      category: "data-structures",
+    };
+
+    const html = renderToString(
+      h(ComplexityAnalysisModal, {
+        algorithmConfig: llConfig,
+        activeOperation: "insert-head",
+        currentStepIndex: 0,
+        steps: [],
+        currentData: [10, 20],
+        params: null,
+        onClose: () => {},
+      }),
+    );
+
+    expect(html).not.toMatch(/No derivation data for this case/);
+    expect(html).toMatch(/Concept Definition/);
+    expect(html).toMatch(/Insert at Head/);
+    expect(html).toMatch(/Worked Example Walkthrough/);
+    expect(html).toMatch(/Current input size n[\s\S]*2/);
+    expect(html).toMatch(/Mathematical Derivation/);
+    expect(html).toMatch(/O\(1\)/);
   });
 });
