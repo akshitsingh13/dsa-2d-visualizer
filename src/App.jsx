@@ -8,6 +8,7 @@ import StackVisualizer from "./components/Visualizer/StackVisualizer";
 import QueueVisualizer from "./components/Visualizer/QueueVisualizer";
 import LinkedListVisualizer from "./components/Visualizer/LinkedListVisualizer";
 import TreeVisualizer from "./components/Visualizer/TreeVisualizer";
+import GraphVisualizer from "./components/Visualizer/GraphVisualizer";
 import useAlgorithmRunner from "./hooks/useAlgorithmRunner";
 import PlaybackControls from "./components/Controls/PlaybackControls";
 import algorithmRegistry from "./algorithms/algorithmRegistry";
@@ -20,6 +21,7 @@ import ComplexityAnalysisButton from "./components/ComplexityAnalysis/Complexity
 import ComplexityAnalysisModal from "./components/ComplexityAnalysis/ComplexityAnalysisModal";
 import { getCategoryTheory, getTheory } from "./theory/index";
 import { getComplexityAnalysis } from "./algorithms/complexityAnalysis";
+import { createDefaultGraph } from "./algorithms/graphOps";
 
 import { useRef, useState } from "react";
 
@@ -32,7 +34,14 @@ const VISUALIZERS = {
   queue: QueueVisualizer,
   linkedList: LinkedListVisualizer,
   tree: TreeVisualizer,
+  graph: GraphVisualizer,
 };
+
+function getDefaultDataState(algoId) {
+  if (algoId === "BST") return null;
+  if (algoId === "GRAPH") return createDefaultGraph();
+  return [];
+}
 
 function defaultOperation(config) {
   if (config && Array.isArray(config.inputs.operation)) {
@@ -83,7 +92,7 @@ function App() {
   const algorithmConfig = algorithmRegistry[dsaConcept];
   const isDataStructure = algorithmConfig?.category === "data-structures";
   const dsEntry = dsByAlgo[dsaConcept] ?? {
-    data: dsaConcept === "BST" ? null : [],
+    data: getDefaultDataState(dsaConcept),
     opCount: 0,
     operation: algorithmConfig ? defaultOperation(algorithmConfig) : null,
   };
@@ -149,7 +158,7 @@ function App() {
 
     if (isDataStructure) {
       const operation = params.operation ?? selectedOperation;
-      const defaultEmptyData = dsaConcept === "BST" ? null : [];
+      const defaultEmptyData = getDefaultDataState(dsaConcept);
       const previousData = dsEntry.data !== undefined ? dsEntry.data : defaultEmptyData;
       const previousCount = dsEntry.opCount ?? 0;
       const steps = algorithmConfig.algorithm(
@@ -185,7 +194,7 @@ function App() {
       setDsByAlgo((previous) => ({
         ...previous,
         [dsaConcept]: {
-          data: dsaConcept === "BST" ? null : [],
+          data: getDefaultDataState(dsaConcept),
           opCount: 0,
           operation: selectedOperation,
         },

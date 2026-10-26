@@ -9,6 +9,7 @@ import StackVisualizer from "./components/Visualizer/StackVisualizer";
 import QueueVisualizer from "./components/Visualizer/QueueVisualizer";
 import LinkedListVisualizer from "./components/Visualizer/LinkedListVisualizer";
 import TreeVisualizer from "./components/Visualizer/TreeVisualizer";
+import GraphVisualizer from "./components/Visualizer/GraphVisualizer";
 import ControlPanel from "./components/Controls/ControlPanel";
 import ComplexityCounter from "./components/Visualizer/ComplexityCounter";
 import linearSearch from "./algorithms/linearSearch";
@@ -18,6 +19,7 @@ import stackOperation from "./algorithms/stackOps";
 import queueOperation from "./algorithms/queueOps";
 import linkedListOperation from "./algorithms/linkedList";
 import bstOperation from "./algorithms/bstOps";
+import graphOperation, { createDefaultGraph } from "./algorithms/graphOps";
 
 // Server-render smoke tests: catch runtime errors in the component tree
 // without needing a browser. Interactions are covered by manual testing.
@@ -45,6 +47,10 @@ describe("component smoke tests", () => {
       [
         TreeVisualizer,
         bstOperation(null, { operation: "insert", value: 50 }).pop(),
+      ],
+      [
+        GraphVisualizer,
+        graphOperation(createDefaultGraph(), { operation: "bfs", value: 1 }).pop(),
       ],
     ];
 

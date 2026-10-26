@@ -26,6 +26,7 @@ export const COUNTER_LABELS = {
   swaps: "Swaps",
   operations: "Operations",
   nodesVisited: "Nodes visited",
+  edgesExplored: "Edges explored",
 };
 
 export function counterLabel(key) {
